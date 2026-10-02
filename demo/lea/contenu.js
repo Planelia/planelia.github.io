@@ -343,7 +343,7 @@ window.PRO = {
   },
   {
    "q": "Et si je suis en retard ?",
-   "r": "Je vous attends 10 minutes. Au-delà, la prestation peut être raccourcie pour respecter la cliente suivante."
+   "r": "Je vous attends 10 minutes. Au-delà, la prestation peut être raccourcie pour respecter le rendez-vous suivant."
   },
   {
    "q": "Je peux annuler ?",
@@ -351,7 +351,7 @@ window.PRO = {
   },
   {
    "q": "Côté hygiène ?",
-   "r": "Limes neuves pour chaque cliente, outils métal stérilisés, plan de travail désinfecté."
+   "r": "Limes neuves à chaque rendez-vous, outils métal stérilisés, plan de travail désinfecté."
   },
   {
    "q": "Comment je paie ?",

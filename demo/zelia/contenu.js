@@ -300,7 +300,7 @@ window.PRO = {
   "acompte": {
    "statut": "prévu",
    "montant": 15,
-   "texte": "Acompte de 15 € pour les nouvelles clientes (prévu, pas encore actif)."
+   "texte": "Acompte de 15 € pour une première visite (prévu, pas encore actif)."
   },
   "a_cocher": [
    "Je serai chez moi à l'heure : au-delà de 15 min de retard, le nail art peut être simplifié.",
@@ -385,7 +385,7 @@ window.PRO = {
   },
   {
    "q": "Côté hygiène ?",
-   "r": "Limes et bâtonnets neufs pour chaque cliente, outils en métal stérilisés, plan de travail désinfecté devant vous."
+   "r": "Limes et bâtonnets neufs à chaque rendez-vous, outils en métal stérilisés, plan de travail désinfecté devant vous."
   },
   {
    "q": "Comment je paie ?",

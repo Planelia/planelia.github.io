@@ -257,7 +257,7 @@ window.PRO = {
   "a_cocher": [
    "J'arrive à l'heure : au-delà de 10 min de retard, la prestation peut être raccourcie.",
    "J'annule au moins 24 h avant.",
-   "Je viens seule, pour garder l'atelier calme."
+   "Je viens sans accompagnant, pour garder l'atelier calme."
   ]
  },
  "secteurs": null,
@@ -291,7 +291,7 @@ window.PRO = {
   },
   {
    "q": "Et si je suis en retard ?",
-   "r": "Je vous attends 10 minutes. Au-delà, la prestation est raccourcie pour ne pas décaler la cliente suivante."
+   "r": "Je vous attends 10 minutes. Au-delà, la prestation est raccourcie pour ne pas décaler le rendez-vous suivant."
   },
   {
    "q": "Je peux annuler ?",

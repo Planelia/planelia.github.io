@@ -197,7 +197,7 @@ document.body.innerHTML = `
   <button class="btn sec" onclick="location.reload()">Recommencer la démo</button>
 </section>
 
-  ${P.avis?.length ? `<h2>Avis clientes <span class="prevu">avis d’exemple</span></h2>
+  ${P.avis?.length ? `<h2>Avis <span class="prevu">avis d’exemple</span></h2>
   <div class="avis">${P.avis.map(a => `<figure><span class="etoiles" aria-label="${a.note} sur 5">${'★'.repeat(a.note)}${'☆'.repeat(5 - a.note)}</span>
     <blockquote>${esc(a.texte)}</blockquote><figcaption>${esc(a.prenom)} · ${esc(a.prestation)}</figcaption></figure>`).join('')}</div>` : ''}
 
