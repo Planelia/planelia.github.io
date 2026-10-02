@@ -1,0 +1,141 @@
+/* Moteur Planélia — styles communs. Toutes les couleurs, polices et formes viennent
+   des variables du thème de chaque pro (fiche pro.js → theme.vars). Valeurs par défaut ci-dessous. */
+:root{
+  /* Identité Planélia (signature + bandeau), jamais modifiée par les thèmes */
+  --sauge:#4d6b57; --sauge-clair:#dfe8dc;
+  /* Thème par défaut */
+  --fond:#fbf6ee; --texte:#2f3a33; --doux:#6b756e; --titre:#2f3a33;
+  --carte:#fff; --bord:#e6dfd3; --champ:#fff; --info:#f1ece2;
+  --accent:#4d6b57; --accent-texte:#fff; --accent-fond:#f4f8f2;
+  --creneau:#4d6b57; --creneau-texte:#fff;
+  --entete:linear-gradient(135deg,#f6dcd3,#fbf6ee);
+  --police-titre:Georgia,serif; --police-texte:system-ui,sans-serif;
+  --titre-graisse:400; --titre-casse:none; --titre-espace:0;
+  --rayon:14px; --rayon-btn:14px; --bord-ep:1.5px; --ombre:none;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--texte);font:16px/1.5 var(--police-texte);padding-bottom:72px;min-height:100vh}
+main{max-width:560px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--police-titre);font-weight:var(--titre-graisse);text-transform:var(--titre-casse);letter-spacing:var(--titre-espace);color:var(--titre);margin:0;line-height:1.15}
+h2{font-size:1.4rem;margin:32px 0 12px;display:flex;gap:10px;align-items:center}
+h2 .n{font:600 .8rem var(--police-texte);background:var(--accent);color:var(--accent-texte);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;flex:none;letter-spacing:0}
+h3.cat{font-size:1rem;margin:18px 0 8px;color:var(--doux);font-family:var(--police-texte);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.muted{color:var(--doux);font-size:.9rem}
+.prevu{display:inline-block;font:600 .7rem var(--police-texte);text-transform:uppercase;letter-spacing:.04em;border:1px solid currentColor;color:var(--doux);border-radius:6px;padding:0 6px;margin-left:6px;vertical-align:2px}
+[hidden]{display:none!important}
+
+/* En-tête */
+.banniere{height:150px;background:var(--entete);background-size:cover;background-position:center}
+header{text-align:center;padding:0 16px 8px}
+.avatar{position:relative;width:104px;height:104px;border-radius:50%;margin:-52px auto 10px;display:block;object-fit:cover;border:4px solid var(--carte);background:var(--carte);box-shadow:var(--ombre)}
+.mono{display:grid;place-items:center;background:var(--accent);color:var(--accent-texte);font:var(--titre-graisse) 2.6rem var(--police-titre)}
+header h1{font-size:2.1rem}
+.metier{color:var(--doux);margin:4px 0 0;font-weight:500}
+header .bio{margin:10px auto 0;max-width:30em}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.badge{background:var(--carte);border:1px solid var(--bord);border-radius:99px;padding:4px 12px;font-size:.85rem}
+.confiance{display:flex;gap:6px 14px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:.85rem;color:var(--doux)}
+.confiance span::before{content:"✓ ";color:var(--accent);font-weight:700}
+.contacts{display:flex;gap:8px;justify-content:center;margin-top:14px}
+.contacts button{font:500 .85rem var(--police-texte);background:var(--carte);color:var(--texte);border:var(--bord-ep) solid var(--bord);border-radius:var(--rayon-btn);padding:8px 14px;cursor:not-allowed}
+.places{margin:14px auto 0;display:inline-block;background:var(--accent-fond);color:var(--texte);border-radius:99px;padding:5px 14px;font-size:.85rem;font-weight:500}
+
+/* Galerie */
+.galerie{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.vignette{aspect-ratio:1;border:0;padding:0;border-radius:calc(var(--rayon) / 2);overflow:hidden;background:var(--accent-fond);cursor:zoom-in}
+.vignette img{width:100%;height:100%;object-fit:cover;display:block}
+.vignette.vide{display:grid;place-items:center;color:var(--doux);font-size:.75rem;cursor:default;border:1px dashed var(--bord)}
+dialog{border:0;padding:0;background:transparent;max-width:min(94vw,560px)}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+dialog img{width:100%;border-radius:var(--rayon);display:block}
+dialog p{color:#fff;text-align:center;margin:8px 0}
+dialog button{display:block;margin:0 auto;font:600 1rem var(--police-texte);background:#fff;color:#222;border:0;border-radius:99px;padding:8px 20px}
+
+/* Cartes à choisir */
+.choix{display:grid;gap:10px}
+.carte,.presta{background:var(--carte);border:var(--bord-ep) solid var(--bord);border-radius:var(--rayon);box-shadow:var(--ombre)}
+.carte{display:flex;gap:12px;align-items:center;padding:14px;cursor:pointer}
+.presta .carte{border:0;background:transparent;box-shadow:none}
+.carte input{accent-color:var(--accent);width:20px;height:20px;margin:0;flex:none}
+.presta:has(input:checked),.carte:has(input:checked){border-color:var(--accent);background:var(--accent-fond)}
+.presta .carte:has(input:checked){background:transparent;border:0;box-shadow:none}
+label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.carte .t{flex:1}
+.carte .t b{display:block;font-weight:600}
+.carte .prix{font-weight:600;white-space:nowrap;text-align:right}
+.carte .prix small{display:block;font-weight:400;color:var(--doux);font-size:.75rem}
+.detail{padding:0 14px 12px 46px;font-size:.9rem}
+.detail summary{color:var(--accent);cursor:pointer;font-weight:500;width:max-content}
+.detail p{margin:6px 0}
+.detail img{width:100%;border-radius:calc(var(--rayon) / 2);margin-top:8px}
+.precisions{margin-top:14px;display:grid;gap:10px}
+.precisions .carte{padding:12px 14px}
+.longueurs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.lieux{grid-template-columns:1fr 1fr}
+.lieux .carte{flex-direction:column;align-items:flex-start;gap:6px}
+select,input[type=text],input[type=tel]{width:100%;font:inherit;padding:12px;border:var(--bord-ep) solid var(--bord);border-radius:var(--rayon);background:var(--champ);color:var(--texte)}
+select:focus,input:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+label.champ{display:block;font-weight:500;margin:12px 0 6px}
+.info{background:var(--info);border-radius:var(--rayon);padding:10px 12px;font-size:.9rem;margin-top:10px}
+
+/* Calendrier */
+.jours{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px}
+.jours label{flex:none;width:64px;text-align:center;background:var(--carte);border:var(--bord-ep) solid var(--bord);border-radius:var(--rayon);padding:8px 0;cursor:pointer}
+.jours label small{display:block;color:var(--doux);font-size:.75rem}
+.jours label small:first-of-type{text-transform:capitalize}
+.jours label b{font-size:1.2rem}
+.jours input,.creneaux input,.longueurs input{position:absolute;opacity:0;pointer-events:none}
+.jours label:has(input:checked){background:var(--accent);border-color:var(--accent);color:var(--accent-texte)}
+.jours label:has(input:checked) small{color:inherit}
+.creneaux{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.creneaux label,.longueurs label{text-align:center;background:var(--carte);border:var(--bord-ep) solid var(--bord);border-radius:var(--rayon-btn);padding:10px 0;cursor:pointer;font-weight:500}
+.longueurs label small{display:block;font-weight:400;font-size:.75rem;color:var(--doux)}
+.creneaux label:has(input:checked),.longueurs label:has(input:checked){background:var(--creneau);border-color:var(--creneau);color:var(--creneau-texte)}
+.longueurs label:has(input:checked) small{color:inherit}
+
+.btn{display:block;width:100%;border:var(--bord-ep) solid var(--accent);border-radius:var(--rayon-btn);padding:16px;font:600 1rem var(--police-texte);background:var(--accent);color:var(--accent-texte);cursor:pointer;margin-top:20px;text-decoration:none;text-align:center}
+.btn.sec{background:transparent;color:var(--accent);margin-top:10px}
+.btn:disabled,.lien-off{opacity:.55;cursor:not-allowed}
+
+/* Avis, FAQ */
+.avis{display:grid;gap:10px}
+.avis figure{margin:0;background:var(--carte);border:var(--bord-ep) solid var(--bord);border-radius:var(--rayon);padding:14px;box-shadow:var(--ombre)}
+.avis blockquote{margin:6px 0}
+.avis figcaption{color:var(--doux);font-size:.85rem}
+.etoiles{color:var(--accent);letter-spacing:2px}
+.faq details{background:var(--carte);border:var(--bord-ep) solid var(--bord);border-radius:var(--rayon);padding:12px 14px;margin-bottom:8px}
+.faq summary{font-weight:600;cursor:pointer}
+.faq p{margin:8px 0 0}
+
+/* Récap / confirmation */
+.panneau{background:var(--carte);border:var(--bord-ep) solid var(--bord);border-radius:var(--rayon);padding:18px;margin-top:24px;box-shadow:var(--ombre)}
+/* Une ligne par paire ; la valeur passe sous le libellé si elle ne tient pas à côté. */
+.panneau dl{display:grid;gap:6px;margin:12px 0 0}
+.panneau dl div{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 14px}
+.panneau dt{color:var(--doux)}
+.panneau dd{margin:0 0 0 auto;text-align:right}
+.panneau .total{border-top:1px solid var(--bord);padding-top:10px;font-weight:600}
+.conditions{margin-top:16px;font-size:.9rem}
+.conditions ul{margin:8px 0;padding-left:18px}
+.ok{text-align:center}
+.ok h2{justify-content:center;margin:0}
+.coche{width:56px;height:56px;border-radius:50%;background:var(--accent-fond);color:var(--accent);display:grid;place-items:center;margin:0 auto 10px;font-size:1.8rem}
+
+/* Planélia (fixe) */
+.signature{text-align:center;margin:36px 0 12px;color:var(--doux);font-size:.85rem}
+.signature span{font-family:"Caveat Brush",cursive;color:var(--sauge);font-size:1.3rem;background:var(--sauge-clair);border-radius:8px;padding:0 6px}
+.bandeau{position:fixed;left:0;right:0;bottom:0;background:var(--sauge);color:#fff;text-align:center;font:13px/1.4 system-ui,sans-serif;padding:9px 16px;z-index:5}
+.bandeau a{color:#fff}
+
+/* Ajouts : accroche, questions avant le RDV */
+.accroche{font-family:var(--police-titre);font-size:1.15rem;margin:8px 0 0;color:var(--titre)}
+.question{border:var(--bord-ep) solid var(--bord);border-radius:var(--rayon);background:var(--carte);margin:0;padding:10px 14px 12px}
+.question legend{font-weight:600;padding:0;float:left;width:100%;margin-bottom:2px}
+.question label{clear:both}
+.question label{display:flex;gap:10px;align-items:center;padding:6px 0;cursor:pointer}
+.question input{accent-color:var(--accent);width:18px;height:18px;margin:0;flex:none}
+.question span{flex:1}
+.question small{color:var(--doux);white-space:nowrap}
+.lieu-unique{cursor:default}
+.signature a,.legal a{color:inherit}
+.legal{text-align:center;color:var(--doux);font-size:.75rem;margin:0 0 16px}

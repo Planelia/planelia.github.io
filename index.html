@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planélia — réservation en ligne pour pros beauté indépendantes</title>
+<meta name="description" content="Planélia, la page de réservation à votre nom pour prothésistes ongulaires et esthéticiennes indépendantes, chez vous ou à domicile. En test : on cherche 10 pros.">
+<link rel="icon" href="logo.png">
+
+<link rel="stylesheet" href="assets/fonts/polices.css">
+<style>
+:root{--sauge:#4d6b57;--sauge-clair:#dfe8dc;--creme:#fbf6ee;--terra:#c97f5d;--rose:#e8a596;--texte:#2f3a33;--doux:#66716a;--ligne:#e6dfd3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--creme);color:var(--texte);font:17px/1.5 Inter,system-ui,sans-serif}
+.contenu{max-width:640px;margin:0 auto;padding:0 20px}
+h1,h2{font-family:"Caveat Brush",cursive;font-weight:400;color:var(--sauge);margin:0;line-height:1.1}
+h1{font-size:2.6rem}
+h2{font-size:2rem;margin-bottom:14px}
+section{padding:36px 0}
+.hero{background:var(--sauge-clair);text-align:center;padding:24px 0 40px}
+.hero img{width:150px;height:150px;display:block;margin:0 auto 4px}
+.hero p{margin:14px auto 0;max-width:28em}
+.etiquette{display:inline-block;background:#fff;color:var(--terra);border-radius:99px;padding:4px 14px;font-size:.85rem;font-weight:600;margin-top:16px}
+.btn{display:block;text-align:center;text-decoration:none;font-weight:600;border-radius:14px;padding:15px;margin-top:22px;background:var(--sauge);color:#fff}
+.btn.terra{background:var(--terra)}
+.cible{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.cible span{background:#fff;border:1px solid var(--ligne);border-radius:99px;padding:6px 14px;font-size:.95rem}
+.points{display:grid;gap:12px}
+.point{background:#fff;border:1px solid var(--ligne);border-radius:16px;padding:16px 18px;display:flex;gap:14px}
+.point .ico{font-size:1.5rem;line-height:1}
+.point b{display:block;margin-bottom:2px}
+.point p{margin:0;color:var(--doux);font-size:.95rem}
+.prevu{display:inline-block;background:var(--rose);color:#fff;font-size:.72rem;font-weight:600;border-radius:6px;padding:1px 7px;margin-left:6px;vertical-align:2px}
+.test{background:#fff;border:2px dashed var(--rose);border-radius:20px;padding:22px 20px}
+.test p{margin:8px 0}
+.prix{font-size:.95rem;color:var(--doux)}
+footer{text-align:center;color:var(--doux);font-size:.85rem;padding:28px 20px 36px;border-top:1px solid var(--ligne)}
+footer a{color:var(--sauge)}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="contenu">
+    <img src="logo.png" alt="Planélia">
+    <h1>Vos clientes réservent seules, sur une page à votre nom</h1>
+    <p>Fini les rendez-vous calés à la main entre deux poses : vos clientes choisissent leur prestation, le lieu et l’horaire, et vous retrouvez tout dans votre agenda.</p>
+    <span class="etiquette">En test — bientôt disponible</span>
+    <a class="btn" href="demo/index.html">Voir un exemple de page</a>
+  </div>
+</header>
+
+<main class="contenu">
+  <section>
+    <h2>Pour qui ?</h2>
+    <p>Pour les <b>prothésistes ongulaires</b> et les <b>esthéticiennes indépendantes</b>, qu’elles reçoivent chez elles ou se déplacent chez leurs clientes.</p>
+    <div class="cible"><span>💅 Prothésistes ongulaires</span><span>🌿 Esthéticiennes</span><span>🏠 Chez vous</span><span>🚗 À domicile</span></div>
+  </section>
+
+  <section>
+    <h2>Pensé pour votre façon de travailler</h2>
+    <div class="points">
+      <div class="point"><span class="ico">🔒</span><div><b>Votre adresse protégée</b><p>Avant la réservation, seul votre quartier est affiché. L’adresse exacte n’est donnée qu’une fois le rendez-vous pris.</p></div></div>
+      <div class="point"><span class="ico">🗺️</span><div><b>Zones, frais et trajets</b><p>Vous définissez vos secteurs et vos frais de déplacement ; les horaires proposés laissent le temps de trajet entre deux clientes.</p></div></div>
+      <div class="point"><span class="ico">🔔</span><div><b>Rappels automatiques <span class="prevu">prévu</span></b><p>Un rappel envoyé à la cliente la veille, pour limiter les oublis. En cours de préparation.</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="test">
+      <h2>En test : on cherche 10&nbsp;pros</h2>
+      <p>Planélia est en cours de construction. Nous cherchons 10 professionnelles pour l’essayer gratuitement et nous dire ce qui leur manque.</p>
+      <p class="prix">Gratuit pendant le test, puis 19 €/mois sans engagement, 1er mois offert (prix indicatif).</p>
+      <a class="btn terra" href="https://www.instagram.com/planelia.fr/" rel="noopener">Nous écrire sur Instagram</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Planélia · réservation en ligne pour pros beauté indépendantes · en test</p>
+  <p>Ce site ne collecte aucune donnée. · <a href="https://www.instagram.com/planelia.fr/" rel="noopener">@planelia.fr</a></p>
+  <p><a href="mentions-legales.html">Mentions légales</a> · <a href="confidentialite.html">Confidentialité</a> · <a href="credits.html">Crédits</a></p>
+</footer>
+</body>
+</html>

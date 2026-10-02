@@ -1,0 +1,330 @@
+// Moteur de page de réservation Planélia.
+// Lit window.PRO = contenu de la pro (contenu.js, généré depuis demos-contenu/<pro>/contenu.json par outils/integrer.js)
+// + PRO.reglages (reglages.js : thème, agenda). Démo : rien n'est envoyé ni enregistré.
+(() => {
+const P = window.PRO, R = P.reglages;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+const hm = m => `${Math.floor(m/60)}h${String(m%60).padStart(2,'0')}`;
+const enMin = s => { const [h, m] = s.split(':'); return h*60 + +m; };
+const duree = m => m < 60 ? `${m} min` : `${Math.floor(m/60)} h${m%60 ? ' '+String(m%60).padStart(2,'0') : ''}`;
+const plus = (prix, min) => [prix ? `+${prix} €` : '', min ? `+${min} min` : ''].filter(Boolean).join(' · ');
+const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+const PAS = R.pas || 30, A = P.agenda || R.agenda;   // agenda : {jours, ouverture, fermeture, par_jour: {"6": {fermeture}}}
+const heures = d => { const h = {...A, ...A.par_jour?.[d.getDay()]}; return [enMin(h.ouverture), enMin(h.fermeture)]; };
+const prenomPro = P.pro_prenom || P.nom.split(' ')[0];
+const studio = P.lieu.studio, domicile = P.lieu.domicile;
+const lieuxChoix = studio && domicile;
+// Secteurs (un jour par ligne dans le contenu) regroupés par nom : {nom, frais, trajet, jours:[…]}
+const zones = [];
+for (const s of P.secteurs || []) {
+  let z = zones.find(z => z.nom === s.secteur);
+  if (!z) zones.push(z = {nom: s.secteur, frais: s.frais, trajet: s.trajet_min, jours: []});
+  if (s.jour) z.jours.push(JOURS.indexOf(s.jour.toLowerCase()));
+}
+const principales = P.prestations.filter(p => !p.option), options = P.prestations.filter(p => p.option);
+const longueurs = P.longueurs?.choix || [];
+const aLongueur = p => p.longueur && (!P.longueurs?.applique_a || P.longueurs.applique_a.includes(p.id));
+const photos = P.photos || {};
+// Grille de 3 : on garde un multiple de 3 photos pour ne pas laisser de trou.
+const galerie = photos.galerie?.length >= 3 ? photos.galerie.slice(0, photos.galerie.length - photos.galerie.length % 3) : Array(6).fill({});
+const avatar = R.avatar || photos.profil;
+
+// Thème : variables CSS et CSS propre à la pro (polices servies par site/assets/fonts/polices.css)
+for (const [k, v] of Object.entries(R.theme.vars)) document.documentElement.style.setProperty('--' + k, v);
+if (R.theme.css) document.head.insertAdjacentHTML('beforeend', `<style>${R.theme.css}</style>`);
+document.title = `${P.nom} — Réserver`;
+
+// ---------- Agenda fictif : quelques RDV déjà pris, différents chaque jour ----------
+const dimanche = new Date(); dimanche.setDate(dimanche.getDate() + (7 - dimanche.getDay()) % 7); dimanche.setHours(23, 59);
+function agendaDu(date, OUV, FERM) {
+  const n = date.getDate(), L = FERM - OUV;
+  // reglages.semaineChargee : cette semaine, journée prise sauf 1 ou 2 trous de 2 h (≈ 1 RDV chacun).
+  if (R.semaineChargee && date <= dimanche) {
+    const trous = (L > 300 ? [L*0.15 + (n%2)*30, L*0.6] : [0]).map(d => OUV + Math.round(d/PAS)*PAS);
+    return [OUV, ...trous.map(t => t + 120)].map((debut, k) => ({debut, fin: trous[k] ?? FERM})).filter(r => r.fin > r.debut);
+  }
+  return [[0, 90], [L*0.42 + (n%2)*30, 75 + (n%2)*30], [L*0.75 + (n%4)*15, 60]]
+    .filter((_, k) => (n + k) % 4)
+    .map(([d, l]) => { const debut = OUV + Math.round(d/PAS)*PAS; return {debut, fin: debut + l}; });
+}
+function joursOuverts(filtre, nb = 8) {
+  const res = [];
+  for (let d = new Date(), i = 0; res.length < nb && i < 60; d.setDate(d.getDate()+1), i++)
+    if (A.jours.includes(d.getDay()) && (!filtre?.length || filtre.includes(d.getDay())))
+      { const [ouv, ferm] = heures(d); res.push({date: new Date(d), ouv, ferm, pris: agendaDu(d, ouv, ferm)}); }
+  return res;
+}
+// Un créneau est libre si, trajets compris (à domicile), il ne chevauche aucun RDV existant.
+// ponytail: les RDV existants gardent un trajet fixe de 20 min ; le vrai calcul viendra avec la vue pro.
+function creneauxLibres(jour, dureeTot, trajet) {
+  const now = new Date(), tot = jour.date.toDateString() === now.toDateString() ? now.getHours()*60 + now.getMinutes() + 60 : 0;
+  const marge = trajet ? 20 : 0, libres = [];
+  for (let t = Math.max(jour.ouv, Math.ceil(tot/PAS)*PAS); t + dureeTot <= jour.ferm; t += PAS) {
+    const a = t - trajet, b = t + dureeTot + trajet;
+    if (jour.pris.every(r => b <= r.debut - marge || a >= r.fin + marge)) libres.push(t);
+  }
+  return libres;
+}
+// « Plus que N places cette semaine » : RDV d'1 h 30 qu'on peut encore caser d'ici dimanche.
+function placesSemaine() {
+  let n = 0;
+  for (const j of joursOuverts(null, 7).filter(j => j.date <= dimanche)) {
+    let t = -1;
+    for (const s of creneauxLibres(j, 90, 0)) if (s >= t) { n++; t = s + 90; }
+  }
+  return n;
+}
+
+// ---------- Construction de la page ----------
+const detailHTML = p => (p.description || p.inclus || p.tenue || p.conseils) ? `<details class="detail"><summary>Voir le détail</summary>
+  ${p.description ? `<p>${esc(p.description)}</p>` : ''}
+  ${p.inclus?.length ? `<p><b>Inclus :</b> ${p.inclus.map(esc).join(' · ')}</p>` : ''}
+  ${p.tenue && p.tenue !== '—' ? `<p><b>Tenue :</b> ${esc(p.tenue)}</p>` : ''}
+  ${p.conseils ? `<p><b>Conseil :</b> ${esc(p.conseils)}</p>` : ''}
+  ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.nom)}" loading="lazy">` : ''}</details>` : '';
+
+const cats = P.categories?.length ? P.categories : [{nom: ''}];
+const prestaHTML = cats.map(c => {
+  const liste = principales.filter(p => !c.id || p.categorie === c.id);
+  return !liste.length ? '' : (c.nom && cats.length > 1 ? `<h3 class="cat">${esc(c.nom)}</h3>` : '') + `<div class="choix">` + liste.map(p => `
+  <div class="presta">
+    <label class="carte"><input type="radio" name="presta" value="${P.prestations.indexOf(p)}">
+      <span class="t"><b>${esc(p.nom)}</b><span class="muted">${duree(p.duree_min)}${aLongueur(p) ? ' · selon la longueur' : ''}</span></span>
+      <span class="prix">${p.a_partir_de ? '<small>à partir de</small>' : ''}${p.prix} €</span></label>
+    ${detailHTML(p)}
+  </div>`).join('') + `</div>`;
+}).join('');
+
+const optionHTML = o => `<div class="presta"><label class="carte"><input type="checkbox" name="option" value="${P.prestations.indexOf(o)}">
+  <span class="t"><b>${esc(o.nom)}</b><span class="muted">+${duree(o.duree_min)}</span></span>
+  <span class="prix">${o.a_partir_de ? '<small>dès</small>' : ''}+${o.prix} €${o.unite ? `<small>${esc(o.unite)}</small>` : ''}</span></label>${detailHTML(o)}</div>`;
+
+const questionHTML = (q, i) => q.options ? `<fieldset class="question"><legend>${esc(q.question)}</legend>
+  ${q.options.map((o, k) => `<label><input type="radio" name="q${i}" value="${k}"${k ? '' : ' checked'}><span>${esc(o.label)}</span>
+    <small>${plus(o.prix_plus, o.duree_plus)}</small></label>`).join('')}</fieldset>`
+  : `<label class="champ">${esc(q.question)} ${q.statut ? `<span class="prevu">${esc(q.statut)}</span>` : ''}</label>
+     <input type="text" disabled placeholder="${esc(q.aide || 'Bientôt disponible')}" class="lien-off">`;
+
+const cond = P.conditions || {};
+const conditionsListe = [...(cond.a_cocher || []), ...(cond.acompte ? [cond.acompte.texte] : [])];
+const NOMS_CONTACT = {instagram: 'Instagram', whatsapp: 'WhatsApp', telephone: 'Appeler', tiktok: 'TikTok'};
+
+document.body.innerHTML = `
+<div class="banniere" ${photos.banniere ? `style="background-image:url('${esc(photos.banniere)}')"` : ''}></div>
+<header>
+  ${avatar ? `<img class="avatar" src="${esc(avatar)}" alt="${esc(P.nom)}">` : `<div class="avatar mono" aria-hidden="true">${esc(P.nom[0])}</div>`}
+  <h1>${esc(P.nom)}</h1>
+  <p class="metier">${esc(P.metier)} · ${esc(P.ville)}</p>
+  ${P.accroche ? `<p class="accroche">${esc(P.accroche)}</p>` : ''}
+  <p class="bio">${esc(P.bio)}</p>
+  <div class="badges"><span class="badge">📍 ${esc(P.lieu.adresse_publique)}</span>${P.horaires ? `<span class="badge">🕒 ${esc(P.horaires)}</span>` : ''}</div>
+  ${P.badges?.length ? `<div class="confiance">${P.badges.map(c => `<span>${esc(c)}</span>`).join('')}</div>` : ''}
+  <div class="contacts">${Object.keys(P.contact || {}).filter(k => NOMS_CONTACT[k])
+    .map(k => `<button type="button" disabled title="Désactivé dans la démo">${NOMS_CONTACT[k]}</button>`).join('')}</div>
+  <p class="muted" style="margin:6px 0 0;font-size:.75rem">Contacts désactivés dans la démo</p>
+  <span class="places" id="places" hidden></span>
+  <a class="btn" href="#resa" style="max-width:320px;margin:16px auto 0">Prendre rendez-vous</a>
+</header>
+<main>
+  <h2>Réalisations</h2>
+  <div class="galerie">${galerie.map((g, i) => g.fichier
+    ? `<button type="button" class="vignette" data-i="${i}" aria-label="Agrandir : ${esc(g.legende)}"><img src="${esc(g.fichier)}" alt="${esc(g.legende)}" loading="lazy"></button>`
+    : `<div class="vignette vide">Photo à venir</div>`).join('')}</div>
+
+<form id="resa" novalidate>
+  <h2><span class="n">1</span>Prestation</h2>
+  ${prestaHTML}
+  <div class="precisions" id="precisions" hidden>
+    <div id="blocLongueur" hidden><h3 class="cat" style="margin:6px 0 8px">Longueur</h3>
+      <div class="longueurs">${longueurs.map((l, i) => `<label><input type="radio" name="longueur" value="${i}"${i ? '' : ' checked'}>${esc(l.id)}<small>${l.prix_plus ? '+' + l.prix_plus + ' €' : 'inclus'}</small></label>`).join('')}</div></div>
+    ${options.length ? `<h3 class="cat" style="margin:6px 0 0">Options</h3>${options.map(optionHTML).join('')}` : ''}
+    ${P.questions_avant_rdv?.length ? `<h3 class="cat" style="margin:6px 0 0">Pour prévoir le bon temps</h3>${P.questions_avant_rdv.map(questionHTML).join('')}` : ''}
+  </div>
+
+  <h2><span class="n">2</span>Lieu</h2>
+  ${lieuxChoix ? `<div class="choix lieux">
+    <label class="carte"><input type="radio" name="lieu" value="studio"><b>Chez ${esc(prenomPro)}</b><span class="muted">L’adresse exacte après réservation</span></label>
+    <label class="carte"><input type="radio" name="lieu" value="domicile"><b>À domicile</b><span class="muted">${esc(prenomPro)} se déplace chez vous</span></label>
+  </div>` : `<div class="carte lieu-unique"><input type="radio" name="lieu" value="${studio ? 'studio' : 'domicile'}" checked hidden>
+    <span class="t"><b>${studio ? `Chez ${esc(prenomPro)}` : 'À domicile uniquement'}</b>${studio ? '' : `<span class="muted">${esc(P.lieu.texte || P.lieu.adresse_publique)}</span>`}</span></div>`}
+  ${studio ? `<div id="blocStudio" class="info"${lieuxChoix ? ' hidden' : ''}>🔒 L’adresse exacte vous est communiquée une fois le rendez-vous confirmé.</div>` : ''}
+  ${zones.length ? `<div id="blocDomicile" hidden>
+    <label class="champ" for="zone">Votre secteur</label>
+    <select id="zone">${zones.map((z, i) => `<option value="${i}">${esc(z.nom)} — ${z.frais ? '+' + z.frais + ' €' : 'sans frais'}</option>`).join('')}</select>
+    <div id="infoZone" class="info"></div>
+  </div>` : ''}
+
+  <h2><span class="n">3</span>Date et heure</h2>
+  <p id="aideCal" class="muted">Choisissez d’abord une prestation${lieuxChoix ? ' et un lieu' : ''}.</p>
+  <div id="cal" hidden>
+    <div class="jours" id="jours"></div>
+    <div class="creneaux" id="creneaux"></div>
+    <p id="noteTrajet" class="muted"></p>
+    <button type="button" class="btn sec" disabled style="font-size:.9rem;padding:10px">Prévenez-moi si un créneau se libère <span class="prevu">prévu</span></button>
+  </div>
+
+  <h2><span class="n">4</span>Vos coordonnées</h2>
+  <label class="champ" for="prenom">Prénom</label>
+  <input type="text" id="prenom" autocomplete="given-name">
+  <label class="champ" for="tel">Téléphone</label>
+  <input type="tel" id="tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78" pattern="^(\\+33\\s?|0)[1-9]([\\s.\\-]?\\d{2}){4}$">
+  <div id="blocAdresse" hidden>
+    <label class="champ" for="adresse">Adresse du rendez-vous</label>
+    <input type="text" id="adresse" autocomplete="street-address">
+  </div>
+  <p id="erreur" class="info" role="alert" hidden></p>
+  <button class="btn">Vérifier ma réservation</button>
+</form>
+
+<section id="recap" class="panneau" hidden aria-live="polite">
+  <h2 style="margin:0">Récapitulatif</h2>
+  <dl id="recapListe"></dl>
+  <div class="conditions">
+    <details><summary>Conditions de ${esc(prenomPro)}</summary><ul>${conditionsListe.map(c => `<li>${esc(c)}</li>`).join('')}</ul></details>
+    <label style="display:flex;gap:10px;margin-top:10px"><input type="checkbox" id="lu" style="accent-color:var(--accent);width:20px;height:20px;flex:none"> J’ai lu et j’accepte les conditions (retard, annulation${cond.acompte ? ', acompte' : ''}).</label>
+  </div>
+  <button class="btn" id="confirmer">Confirmer le rendez-vous</button>
+  <button class="btn sec" id="modifier">Modifier</button>
+</section>
+
+<section id="fini" class="panneau ok" hidden aria-live="polite">
+  <div class="coche">✓</div>
+  <h2 id="finiTitre"></h2>
+  <p id="finiTexte"></p>
+  <button class="btn" id="ics">📅 Ajouter à mon agenda</button>
+  <p class="muted">Démonstration : aucun message n’a été envoyé et aucune donnée n’a été enregistrée. Le fichier agenda est créé sur votre téléphone.</p>
+  <button class="btn sec" onclick="location.reload()">Recommencer la démo</button>
+</section>
+
+  ${P.avis?.length ? `<h2>Avis clientes <span class="prevu">avis d’exemple</span></h2>
+  <div class="avis">${P.avis.map(a => `<figure><span class="etoiles" aria-label="${a.note} sur 5">${'★'.repeat(a.note)}${'☆'.repeat(5 - a.note)}</span>
+    <blockquote>${esc(a.texte)}</blockquote><figcaption>${esc(a.prenom)} · ${esc(a.prestation)}</figcaption></figure>`).join('')}</div>` : ''}
+
+  ${P.faq?.length ? `<h2>Infos pratiques</h2>
+  <div class="faq">${P.faq.map(f => `<details><summary>${esc(f.q)}</summary><p>${esc(f.r)}</p></details>`).join('')}</div>` : ''}
+
+  <p class="signature">Réservation propulsée par <span>Planélia</span><br><a href="../index.html">Voir les autres exemples</a></p>
+  <p class="legal">Exemple fictif : aucune donnée n’est enregistrée.<br><a href="../../mentions-legales.html">Mentions légales</a> · <a href="../../confidentialite.html">Confidentialité</a></p>
+</main>
+<dialog id="zoom"><img alt=""><p></p><button type="button">Fermer</button></dialog>
+<div class="bandeau">Exemple de démonstration — Planélia est en test</div>`;
+
+// ---------- Galerie : agrandissement au toucher ----------
+const zoom = $('zoom');
+document.querySelector('.galerie').onclick = e => {
+  const b = e.target.closest('.vignette[data-i]'); if (!b) return;
+  const g = galerie[b.dataset.i];
+  zoom.querySelector('img').src = g.fichier; zoom.querySelector('img').alt = g.legende; zoom.querySelector('p').textContent = g.legende;
+  zoom.showModal();
+};
+zoom.onclick = () => zoom.close();
+
+// ---------- État du formulaire ----------
+const choisi = nom => document.querySelector(`[name="${nom}"]:checked`)?.value;
+const etat = () => {
+  const i = choisi('presta'), p = i != null ? P.prestations[i] : null;
+  const lieu = choisi('lieu');
+  const zone = lieu === 'domicile' && zones.length ? zones[$('zone').value] : null;
+  const ajouts = [];   // {nom, prix, duree}
+  if (p && aLongueur(p)) { const l = longueurs[choisi('longueur')]; if (l.prix_plus || l.duree_plus) ajouts.push({nom: 'Longueur ' + l.label, prix: l.prix_plus, duree: l.duree_plus}); }
+  document.querySelectorAll('[name=option]:checked').forEach(x => { const o = P.prestations[x.value]; ajouts.push({nom: o.nom, prix: o.prix, duree: o.duree_min}); });
+  (P.questions_avant_rdv || []).forEach((q, k) => {
+    const o = q.options?.[choisi('q' + k)];
+    if (o && (o.prix_plus || o.duree_plus)) ajouts.push({nom: o.note || o.label, prix: o.prix_plus, duree: o.duree_plus});
+  });
+  const somme = c => ajouts.reduce((s, a) => s + (a[c] || 0), 0);
+  return {p, lieu, zone, ajouts, prix: p ? p.prix + somme('prix') : 0, dureeTot: p ? p.duree_min + somme('duree') : 0,
+    jour: choisi('jour'), heure: choisi('heure')};
+};
+
+let jours = [], cleJours = null;
+function maj() {
+  const s = etat();
+  $('precisions').hidden = !s.p;
+  $('blocLongueur').hidden = !(s.p && aLongueur(s.p));
+  if (studio) $('blocStudio').hidden = s.lieu !== 'studio';
+  if (zones.length) $('blocDomicile').hidden = s.lieu !== 'domicile';
+  $('blocAdresse').hidden = s.lieu !== 'domicile';
+  if (s.zone) $('infoZone').textContent = `🚗 Déplacement : ${s.zone.frais ? s.zone.frais + ' €' : 'offert'} · environ ${s.zone.trajet} min de trajet`
+    + (s.zone.jours.length ? `. ${prenomPro} passe dans ce secteur le ${s.zone.jours.map(j => JOURS[j]).join(' et le ')} : en regroupant les rendez-vous par quartier, elle passe moins de temps sur la route et peut vous proposer plus de créneaux.` : '');
+
+  const pret = s.p && s.lieu;
+  $('cal').hidden = !pret; $('aideCal').hidden = pret;
+  if (!pret) return;
+  const cle = String(s.zone?.jours);
+  if (cle !== cleJours) {          // les jours proposés dépendent du secteur
+    cleJours = cle; jours = joursOuverts(s.zone?.jours);
+    $('jours').innerHTML = jours.map((j, i) => `<label><input type="radio" name="jour" value="${i}"${i ? '' : ' checked'}>
+      <small>${j.date.toLocaleDateString('fr-FR', {weekday: 'short'})}</small><b>${j.date.getDate()}</b>
+      <small>${j.date.toLocaleDateString('fr-FR', {month: 'short'})}</small></label>`).join('');
+  }
+  const trajet = s.zone ? s.zone.trajet : 0;
+  const libres = creneauxLibres(jours[choisi('jour')], s.dureeTot, trajet);
+  $('creneaux').innerHTML = libres.length
+    ? libres.map(t => `<label><input type="radio" name="heure" value="${t}"${String(t) === s.heure ? ' checked' : ''}>${hm(t)}</label>`).join('')
+    : '<p class="muted" style="grid-column:1/-1">Plus de place ce jour-là, essayez un autre jour.</p>';
+  $('noteTrajet').textContent = `Durée prévue : ${duree(s.dureeTot)}.` + (trajet ? ` Les horaires tiennent compte de ${trajet} min de trajet avant et après.` : '');
+}
+$('resa').addEventListener('change', e => { if (e.target.name !== 'heure') maj(); });
+if (!lieuxChoix) maj();
+
+const places = placesSemaine();
+if (places <= 6) { $('places').hidden = false; $('places').textContent = places ? `Plus que ${places} place${places > 1 ? 's' : ''} cette semaine` : 'Complet cette semaine'; }
+
+// ---------- Récap, conditions, confirmation ----------
+const dateLongue = s => jours[s.jour].date.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'});
+function recap() {
+  const s = etat();
+  const nbsp = t => String(t).replace(/ /g, ' ');
+  const lignes = [['Prestation', s.p.nom], ['Prix', nbsp(`${s.p.a_partir_de ? 'dès ' : ''}${s.p.prix} €`)], ...s.ajouts.map(a => [a.nom, nbsp(plus(a.prix, a.duree))]),
+    ['Durée', duree(s.dureeTot)], ['Quand', `${dateLongue(s)} à ${hm(+s.heure)}`],
+    ['Où', s.lieu === 'domicile' ? `À domicile — ${$('adresse').value}` : `Chez ${prenomPro}`]];
+  if (s.zone) lignes.push(['Déplacement', s.zone.frais ? s.zone.frais + ' €' : 'offert']);
+  lignes.push(['Prénom', $('prenom').value], ['Téléphone', nbsp($('tel').value)]);
+  const estime = s.p.a_partir_de || [...document.querySelectorAll('[name=option]:checked')].some(x => P.prestations[x.value].a_partir_de);
+  const total = s.prix + (s.zone ? s.zone.frais : 0);
+  $('recapListe').innerHTML = lignes.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')
+    + `<div class="total"><dt>Total${estime ? ' estimé' : ''}</dt><dd>${total} €</dd></div>`
+    + (cond.acompte ? `<div><dt>Acompte <span class="prevu">${esc(cond.acompte.statut || 'prévu')}</span></dt><dd>${cond.acompte.montant} €</dd></div>` : '');
+  return s;
+}
+$('resa').addEventListener('submit', ev => {
+  ev.preventDefault();
+  const s = etat();
+  const manque = !s.p ? 'Choisissez une prestation.' : !s.lieu ? 'Choisissez un lieu.' : !s.heure ? 'Choisissez un horaire.'
+    : !$('prenom').value.trim() ? 'Indiquez votre prénom.' : !$('tel').value.trim() || !$('tel').checkValidity() ? 'Indiquez un numéro de téléphone valide.'
+    : s.lieu === 'domicile' && !$('adresse').value.trim() ? 'Indiquez l’adresse du rendez-vous.' : '';
+  $('erreur').textContent = manque; $('erreur').hidden = !manque;
+  if (manque) return;
+  recap();
+  $('resa').hidden = true; $('recap').hidden = false; $('recap').scrollIntoView();
+});
+$('modifier').onclick = () => { $('recap').hidden = true; $('resa').hidden = false; };
+$('confirmer').onclick = () => {
+  if (!$('lu').checked) { $('lu').focus(); $('lu').parentElement.style.color = 'var(--accent)'; return; }
+  const s = recap(), quand = `${dateLongue(s)} à ${hm(+s.heure)}`;
+  const adresse = P.lieu.adresse_exacte_apres_resa || 'adresse fictive de démonstration';
+  $('finiTitre').textContent = `C’est noté, ${$('prenom').value.trim()} !`;
+  $('finiTexte').textContent = s.lieu === 'domicile'
+    ? `${prenomPro} viendra chez vous ${quand}. Vous recevriez un SMS de confirmation et un rappel la veille.`
+    : `Rendez-vous ${quand}, au ${adresse}. Vous recevriez cette adresse par SMS, avec un rappel la veille.`;
+  $('ics').onclick = () => telechargerIcs(s, s.lieu === 'domicile' ? $('adresse').value : adresse);
+  $('recap').hidden = true; $('fini').hidden = false; $('fini').scrollIntoView();
+};
+
+// Fichier agenda (.ics) créé sur l'appareil, rien n'est envoyé.
+function telechargerIcs(s, lieu) {
+  const d = jours[s.jour].date, p2 = n => String(n).padStart(2, '0');
+  const ts = m => `${d.getFullYear()}${p2(d.getMonth()+1)}${p2(d.getDate())}T${p2(Math.floor(m/60))}${p2(m%60)}00`;
+  const txt = t => t.replace(/[\\,;]/g, c => '\\' + c);
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Planelia//Demo//FR', 'BEGIN:VEVENT',
+    `UID:${Date.now()}@demo.planelia`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`,
+    `DTSTART:${ts(+s.heure)}`, `DTEND:${ts(+s.heure + s.dureeTot)}`,
+    `SUMMARY:${txt(`${s.p.nom} — ${P.nom}`)}`, `LOCATION:${txt(lieu)}`,
+    `DESCRIPTION:${txt('Exemple de démonstration Planélia')}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([ics], {type: 'text/calendar'}));
+  a.download = 'rendez-vous.ics'; a.click();
+}
+})();
