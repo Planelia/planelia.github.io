@@ -167,6 +167,9 @@ document.body.innerHTML = `
   <h2><span class="n">4</span>Vos coordonnées</h2>
   <label class="champ" for="prenom">Prénom</label>
   <input type="text" id="prenom" autocomplete="given-name">
+  <label class="champ" for="email">E-mail</label>
+  <input type="email" id="email" autocomplete="email" inputmode="email" required aria-describedby="aideEmail">
+  <p id="aideEmail" class="muted" style="margin:6px 0 0">Vous recevrez un e-mail pour confirmer votre rendez-vous.</p>
   <label class="champ" for="tel">Téléphone</label>
   <input type="tel" id="tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78" pattern="^(\\+33\\s?|0)[1-9]([\\s.\\-]?\\d{2}){4}$">
   <div id="blocAdresse" hidden>
@@ -193,7 +196,7 @@ document.body.innerHTML = `
   <h2 id="finiTitre"></h2>
   <p id="finiTexte"></p>
   <button class="btn" id="ics">📅 Ajouter à mon agenda</button>
-  <p class="muted">Démonstration : aucun message n’a été envoyé et aucune donnée n’a été enregistrée. Le fichier agenda est créé sur votre téléphone.</p>
+  <p class="muted">Démonstration : aucun message n’a été envoyé et aucune donnée n’a été enregistrée. Dans la vraie version, un e-mail de confirmation vous serait envoyé. Le fichier agenda est créé sur votre téléphone.</p>
   <button class="btn sec" onclick="location.reload()">Recommencer la démo</button>
 </section>
 
@@ -281,7 +284,7 @@ function recap() {
     ['Durée', duree(s.dureeTot)], ['Quand', `${dateLongue(s)} à ${hm(+s.heure)}`],
     ['Où', s.lieu === 'domicile' ? `À domicile — ${$('adresse').value}` : `Chez ${prenomPro}`]];
   if (s.zone) lignes.push(['Déplacement', s.zone.frais ? s.zone.frais + ' €' : 'offert']);
-  lignes.push(['Prénom', $('prenom').value], ['Téléphone', nbsp($('tel').value)]);
+  lignes.push(['Prénom', $('prenom').value], ['E-mail', $('email').value], ['Téléphone', nbsp($('tel').value)]);
   const estime = s.p.a_partir_de || [...document.querySelectorAll('[name=option]:checked')].some(x => P.prestations[x.value].a_partir_de);
   const total = s.prix + (s.zone ? s.zone.frais : 0);
   $('recapListe').innerHTML = lignes.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')
@@ -293,7 +296,8 @@ $('resa').addEventListener('submit', ev => {
   ev.preventDefault();
   const s = etat();
   const manque = !s.p ? 'Choisissez une prestation.' : !s.lieu ? 'Choisissez un lieu.' : !s.heure ? 'Choisissez un horaire.'
-    : !$('prenom').value.trim() ? 'Indiquez votre prénom.' : !$('tel').value.trim() || !$('tel').checkValidity() ? 'Indiquez un numéro de téléphone valide.'
+    : !$('prenom').value.trim() ? 'Indiquez votre prénom.' : !$('email').value.trim() || !$('email').checkValidity() ? 'Indiquez une adresse e-mail valide.'
+    : !$('tel').value.trim() || !$('tel').checkValidity() ? 'Indiquez un numéro de téléphone valide.'
     : s.lieu === 'domicile' && !$('adresse').value.trim() ? 'Indiquez l’adresse du rendez-vous.' : '';
   $('erreur').textContent = manque; $('erreur').hidden = !manque;
   if (manque) return;
@@ -307,8 +311,8 @@ $('confirmer').onclick = () => {
   const adresse = P.lieu.adresse_exacte_apres_resa || 'adresse fictive de démonstration';
   $('finiTitre').textContent = `C’est noté, ${$('prenom').value.trim()} !`;
   $('finiTexte').textContent = s.lieu === 'domicile'
-    ? `${prenomPro} viendra chez vous ${quand}. Vous recevriez un SMS de confirmation et un rappel la veille.`
-    : `Rendez-vous ${quand}, au ${adresse}. Vous recevriez cette adresse par SMS, avec un rappel la veille.`;
+    ? `${prenomPro} viendra chez vous ${quand}. Vous recevriez un e-mail de confirmation et un rappel la veille.`
+    : `Rendez-vous ${quand}, au ${adresse}. Vous recevriez cette adresse par e-mail, avec un rappel la veille.`;
   $('ics').onclick = () => telechargerIcs(s, s.lieu === 'domicile' ? $('adresse').value : adresse);
   $('recap').hidden = true; $('fini').hidden = false; $('fini').scrollIntoView();
 };
