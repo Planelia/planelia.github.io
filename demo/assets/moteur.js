@@ -206,7 +206,7 @@ document.body.innerHTML = `
   <p id="finiTexte"></p>
   <button class="btn" id="ics">📅 Ajouter à mon agenda</button>
   <p class="muted">Démonstration : aucun message n’a été envoyé et aucune donnée n’a été enregistrée. Dans la vraie version, un e-mail de confirmation vous serait envoyé. Le fichier agenda est créé sur votre téléphone.</p>
-  <button class="btn sec" onclick="location.reload()">Recommencer la démo</button>
+  <button class="btn sec" id="recommencer">Recommencer la démo</button>
 </section>
 
   ${P.avis?.length ? `<h2>Avis <span class="prevu">avis d’exemple</span></h2>
@@ -325,6 +325,7 @@ $('resa').addEventListener('submit', ev => {
   recap();
   $('resa').hidden = true; $('recap').hidden = false; $('recap').scrollIntoView();
 });
+$('recommencer').onclick = () => location.reload();
 $('modifier').onclick = () => { $('recap').hidden = true; $('resa').hidden = false; };
 $('confirmer').onclick = () => {
   if (!$('lu').checked) { $('lu').focus(); $('lu').parentElement.style.color = 'var(--accent)'; return; }
