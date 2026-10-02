@@ -9,7 +9,7 @@ window.PRO = {
   "studio": true,
   "domicile": true,
   "adresse_publique": "Studio à la Guillotière (Lyon 7e) ou chez vous",
-  "adresse_exacte_apres_resa": "8 rue imaginaire, Lyon 7e (adresse fictive de démonstration)",
+  "adresse_exacte_apres_resa": "14 rue des Lilas, 69007 Lyon (adresse fictive de démonstration)",
   "texte": "Je vous reçois dans mon petit studio ou je viens chez vous, avec tout le matériel."
  },
  "accroche": "Des ongles impeccables, chez moi ou chez vous.",

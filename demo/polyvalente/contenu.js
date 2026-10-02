@@ -10,7 +10,7 @@ window.PRO = {
   "studio": true,
   "domicile": true,
   "adresse_publique": "Bordeaux Caudéran, chez moi ou chez vous",
-  "adresse_exacte_apres_resa": "8 rue imaginaire, 33200 Bordeaux (adresse fictive de démonstration)",
+  "adresse_exacte_apres_resa": "14 rue des Glycines, 33200 Bordeaux (adresse fictive de démonstration)",
   "texte": "Je vous reçois dans mon coin beauté, chez moi à Caudéran, ou je viens chez vous avec tout le matériel. L'adresse exacte vous est donnée une fois le rendez-vous confirmé."
  },
  "accroche": "Du nude discret au nail art qui se voit : à vous de choisir.",

@@ -216,6 +216,7 @@ document.body.innerHTML = `
   ${P.faq?.length ? `<h2>Infos pratiques</h2>
   <div class="faq">${P.faq.map(f => `<details><summary>${esc(f.q)}</summary><p>${esc(f.r)}</p></details>`).join('')}</div>` : ''}
 
+  <div class="pour-pros"><b>Vous êtes pro ? Votre page, sur mesure.</b><p>Couleurs, photos, prestations, infos : on la fait à votre image. On cherche 10&nbsp;pros pour tester gratuitement.</p><a class="pp-btn" href="https://www.instagram.com/planelia.fr/" rel="noopener">Nous écrire sur Instagram</a><a class="pp-mail" href="mailto:contact@planelia.fr">ou par e-mail : contact@planelia.fr</a></div>
   <p class="signature">Réservation propulsée par <span>Planélia</span><br><a href="../index.html">Voir les autres exemples</a></p>
   <p class="legal">Exemple fictif : aucune donnée n’est enregistrée.<br><a href="../../mentions-legales.html">Mentions légales</a> · <a href="../../confidentialite.html">Confidentialité</a></p>
 </main>

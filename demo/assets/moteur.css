@@ -137,6 +137,11 @@ label.champ{display:block;font-weight:500;margin:12px 0 6px}
 .question span{flex:1}
 .question small{color:var(--doux);white-space:nowrap}
 .lieu-unique{cursor:default}
+.pour-pros{margin:36px 0 0;background:#fff;border:2px dashed #e8a596;border-radius:18px;padding:18px;text-align:center;font:15px/1.45 Inter,system-ui,sans-serif;color:#2f3a33}
+.pour-pros b{display:block;font:400 1.6rem/1.1 "Caveat Brush",cursive;color:var(--sauge)}
+.pour-pros p{margin:8px 0 14px;color:#5f6a63}
+.pour-pros .pp-btn{display:block;background:var(--sauge);color:#fff;text-decoration:none;font-weight:600;border-radius:12px;padding:12px}
+.pour-pros .pp-mail{display:block;margin-top:10px;color:var(--sauge);font-size:.9rem}
 .signature a,.legal a{color:inherit}
 .legal{text-align:center;color:var(--doux);font-size:.75rem;margin:0 0 16px}
 

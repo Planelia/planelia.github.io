@@ -10,7 +10,7 @@ window.PRO = {
   "studio": true,
   "domicile": false,
   "adresse_publique": "Nantes, quartier Saint-Félix",
-  "adresse_exacte_apres_resa": "8 rue imaginaire, 44000 Nantes (adresse fictive de démonstration)",
+  "adresse_exacte_apres_resa": "14 rue des Hortensias, 44000 Nantes (adresse fictive de démonstration)",
   "texte": "Je vous reçois dans un petit atelier calme, chez moi. L'adresse exacte vous est donnée une fois le rendez-vous confirmé."
  },
  "accroche": "Vos ongles, en mieux. Naturellement.",
