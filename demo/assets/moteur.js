@@ -31,8 +31,15 @@ const galerie = photos.galerie?.length >= 3 ? photos.galerie.slice(0, photos.gal
 const avatar = R.avatar || photos.profil;
 
 // Thème : variables CSS et CSS propre à la pro (polices servies par site/assets/fonts/polices.css)
-for (const [k, v] of Object.entries(R.theme.vars)) document.documentElement.style.setProperty('--' + k, v);
-if (R.theme.css) document.head.insertAdjacentHTML('beforeend', `<style>${R.theme.css}</style>`);
+// Styles (facultatif, contenu.json ou reglages.js) : [{nom, apercu, vars, css}] = ambiances proposées par « Essayez un autre style », appliquées par-dessus R.theme.
+const STYLES = P.styles || R.styles;
+const theme = st => {
+  document.documentElement.removeAttribute('style');
+  for (const [k, v] of Object.entries({...R.theme.vars, ...st?.vars})) document.documentElement.style.setProperty('--' + k, v);
+  $('cssPro').textContent = (R.theme.css || '') + (st?.css || '');
+};
+document.head.insertAdjacentHTML('beforeend', '<style id="cssPro"></style>');
+theme();
 document.title = `${P.nom} — Réserver`;
 
 // ---------- Agenda fictif : quelques RDV déjà pris, différents chaque jour ----------
@@ -116,6 +123,8 @@ document.body.innerHTML = `
   ${avatar ? `<img class="avatar" src="${esc(avatar)}" alt="${esc(P.nom)}">` : `<div class="avatar mono" aria-hidden="true">${esc(P.nom[0])}</div>`}
   <h1>${esc(P.nom)}</h1>
   <p class="metier">${esc(P.metier)} · ${esc(P.ville)}</p>
+  ${STYLES?.length ? `<div class="styles" role="group" aria-labelledby="stylesTitre"><span id="stylesTitre">Essayez un autre style</span>
+    ${STYLES.map((st, i) => `<button type="button" data-style="${i}" aria-pressed="${!i}"><i style="background:${esc(st.apercu)}"></i>${esc(st.nom)}</button>`).join('')}</div>` : ''}
   ${P.accroche ? `<p class="accroche">${esc(P.accroche)}</p>` : ''}
   <p class="bio">${esc(P.bio)}</p>
   <div class="badges"><span class="badge">📍 ${esc(P.lieu.adresse_publique)}</span>${P.horaires ? `<span class="badge">🕒 ${esc(P.horaires)}</span>` : ''}</div>
@@ -212,6 +221,17 @@ document.body.innerHTML = `
 </main>
 <dialog id="zoom"><img alt=""><p></p><button type="button">Fermer</button></dialog>
 <div class="bandeau">Exemple de démonstration — Planélia est en test</div>`;
+
+// ---------- Essayez un autre style (démo polyvalente) ----------
+if (STYLES?.length) {
+  const boutons = document.querySelectorAll('[data-style]');
+  document.querySelector('.styles').onclick = e => {
+    const b = e.target.closest('[data-style]'); if (!b) return;
+    theme(STYLES[b.dataset.style]);
+    boutons.forEach(x => x.setAttribute('aria-pressed', x === b));
+  };
+  theme(STYLES[0]);
+}
 
 // ---------- Galerie : agrandissement au toucher ----------
 const zoom = $('zoom');
