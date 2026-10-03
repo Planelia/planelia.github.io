@@ -1,6 +1,7 @@
 // Moteur de page de réservation Planélia.
 // Lit window.PRO = contenu de la pro (contenu.js, généré depuis demos-contenu/<pro>/contenu.json par outils/integrer.js)
 // + PRO.reglages (reglages.js : thème, agenda). Démo : rien n'est envoyé ni enregistré.
+// Vraie page (rdv.planelia.fr) : charger.js remplit PRO depuis la base, et reglages.pris = créneaux occupés [[Date, Date]…].
 (() => {
 const P = window.PRO, R = P.reglages;
 const $ = id => document.getElementById(id);
@@ -10,7 +11,10 @@ const enMin = s => { const [h, m] = s.split(':'); return h*60 + +m; };
 const duree = m => m < 60 ? `${m} min` : `${Math.floor(m/60)} h${m%60 ? ' '+String(m%60).padStart(2,'0') : ''}`;
 const plus = (prix, min) => [prix ? `+${prix} €` : '', min ? `+${min} min` : ''].filter(Boolean).join(' · ');
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-const PAS = R.pas || 30, A = P.agenda || R.agenda;   // agenda : {jours, ouverture, fermeture, par_jour: {"6": {fermeture}}}
+const REEL = !!R.pris;   // vraie page : pas de textes de démo, pas d'avis d'exemple
+const ACTIF = REEL && R.reserver;   // vraie page où la réservation est branchée (charger.js fournit R.reserver)
+// agenda : {jours, ouverture, fermeture, par_jour: {"6": {fermeture}}, pas, delai_min} ; pas et délai : réglages de la pro
+const A = P.agenda || R.agenda, PAS = R.pas || A.pas || 30, DELAI = A.delai_min ?? 60;
 const heures = d => { const h = {...A, ...A.par_jour?.[d.getDay()]}; return [enMin(h.ouverture), enMin(h.fermeture)]; };
 const prenomPro = P.pro_prenom || P.nom.split(' ')[0];
 const studio = P.lieu.studio, domicile = P.lieu.domicile;
@@ -44,11 +48,18 @@ document.title = `${P.nom} — Réserver`;
 
 // ---------- Agenda fictif : quelques RDV déjà pris, différents chaque jour ----------
 const dimanche = new Date(); dimanche.setDate(dimanche.getDate() + (7 - dimanche.getDay()) % 7); dimanche.setHours(23, 59);
+// Fenêtre du badge de places : vraie page = d'ici dimanche ; démos = 7 jours glissants (sinon « Complet » chaque samedi soir).
+const FIN_PLACES = REEL ? dimanche : new Date(Date.now() + 7 * 864e5), QUAND_PLACES = REEL ? 'cette semaine' : 'ces 7 prochains jours';
 function agendaDu(date, OUV, FERM) {
+  if (R.pris) {   // vrais créneaux occupés, ramenés en minutes de ce jour-là (heure de l'appareil)
+    const j0 = new Date(date); j0.setHours(0, 0, 0, 0);
+    const min = d => Math.min(1440, Math.max(0, Math.round((d - j0) / 60000)));
+    return R.pris.map(([a, b]) => ({debut: min(a), fin: min(b)})).filter(r => r.fin > r.debut && r.debut < 1440 && r.fin > 0);
+  }
   const n = date.getDate(), L = FERM - OUV;
-  // reglages.semaineChargee : cette semaine, journée prise sauf 1 ou 2 trous de 2 h (≈ 1 RDV chacun).
-  if (R.semaineChargee && date <= dimanche) {
-    const trous = (L > 300 ? [L*0.15 + (n%2)*30, L*0.6] : [0]).map(d => OUV + Math.round(d/PAS)*PAS);
+  // reglages.semaineChargee : sur la fenêtre du badge, journée prise sauf 1 trou de 2 h (≈ 1 RDV), matin ou après-midi selon le jour.
+  if (R.semaineChargee && date <= FIN_PLACES) {
+    const trous = [L > 300 ? L*(n%2 ? 0.15 : 0.6) : 0].map(d => OUV + Math.round(d/PAS)*PAS);
     return [OUV, ...trous.map(t => t + 120)].map((debut, k) => ({debut, fin: trous[k] ?? FERM})).filter(r => r.fin > r.debut);
   }
   return [[0, 90], [L*0.42 + (n%2)*30, 75 + (n%2)*30], [L*0.75 + (n%4)*15, 60]]
@@ -65,7 +76,7 @@ function joursOuverts(filtre, nb = 8) {
 // Un créneau est libre si, trajets compris (à domicile), il ne chevauche aucun RDV existant.
 // ponytail: les RDV existants gardent un trajet fixe de 20 min ; le vrai calcul viendra avec la vue pro.
 function creneauxLibres(jour, dureeTot, trajet) {
-  const now = new Date(), tot = jour.date.toDateString() === now.toDateString() ? now.getHours()*60 + now.getMinutes() + 60 : 0;
+  const now = new Date(), tot = jour.date.toDateString() === now.toDateString() ? now.getHours()*60 + now.getMinutes() + DELAI : 0;
   const marge = trajet ? 20 : 0, libres = [];
   for (let t = Math.max(jour.ouv, Math.ceil(tot/PAS)*PAS); t + dureeTot <= jour.ferm; t += PAS) {
     const a = t - trajet, b = t + dureeTot + trajet;
@@ -73,10 +84,10 @@ function creneauxLibres(jour, dureeTot, trajet) {
   }
   return libres;
 }
-// « Plus que N places cette semaine » : RDV d'1 h 30 qu'on peut encore caser d'ici dimanche.
+// « Plus que N places » : RDV d'1 h 30 qu'on peut encore caser d'ici FIN_PLACES.
 function placesSemaine() {
   let n = 0;
-  for (const j of joursOuverts(null, 7).filter(j => j.date <= dimanche)) {
+  for (const j of joursOuverts(null, 7).filter(j => j.date <= FIN_PLACES)) {
     let t = -1;
     for (const s of creneauxLibres(j, 90, 0)) if (s >= t) { n++; t = s + 90; }
   }
@@ -110,10 +121,11 @@ const optionHTML = o => `<div class="presta"><label class="carte"><input type="c
 const questionHTML = (q, i) => q.options ? `<fieldset class="question"><legend>${esc(q.question)}</legend>
   ${q.options.map((o, k) => `<label><input type="radio" name="q${i}" value="${k}"${k ? '' : ' checked'}><span>${esc(o.label)}</span>
     <small>${plus(o.prix_plus, o.duree_plus)}</small></label>`).join('')}</fieldset>`
-  : `<label class="champ">${esc(q.question)} ${q.statut ? `<span class="prevu">${esc(q.statut)}</span>` : ''}</label>
+  : REEL ? '' : `<label class="champ">${esc(q.question)} ${q.statut ? `<span class="prevu">${esc(q.statut)}</span>` : ''}</label>
      <input type="text" disabled placeholder="${esc(q.aide || 'Bientôt disponible')}" class="lien-off">`;
 
-const cond = P.conditions || {};
+const cond = {...P.conditions};
+if (REEL) delete cond.acompte;   // acompte = option payante pas encore codée : jamais affiché sur une vraie page
 const conditionsListe = [...(cond.a_cocher || []), ...(cond.acompte ? [cond.acompte.texte] : [])];
 const NOMS_CONTACT = {instagram: 'Instagram', whatsapp: 'WhatsApp', telephone: 'Appeler', tiktok: 'TikTok'};
 
@@ -129,9 +141,9 @@ document.body.innerHTML = `
   <p class="bio">${esc(P.bio)}</p>
   <div class="badges"><span class="badge">📍 ${esc(P.lieu.adresse_publique)}</span>${P.horaires ? `<span class="badge">🕒 ${esc(P.horaires)}</span>` : ''}</div>
   ${P.badges?.length ? `<div class="confiance">${P.badges.map(c => `<span>${esc(c)}</span>`).join('')}</div>` : ''}
-  <div class="contacts">${Object.keys(P.contact || {}).filter(k => NOMS_CONTACT[k])
+  ${REEL ? '' : `<div class="contacts">${Object.keys(P.contact || {}).filter(k => NOMS_CONTACT[k])
     .map(k => `<button type="button" disabled title="Désactivé dans la démo">${NOMS_CONTACT[k]}</button>`).join('')}</div>
-  <p class="muted" style="margin:6px 0 0;font-size:.75rem">Contacts désactivés dans la démo</p>
+  <p class="muted" style="margin:6px 0 0;font-size:.75rem">Contacts désactivés dans la démo</p>`}
   <span class="places" id="places" hidden></span>
   <a class="btn" href="#resa" style="max-width:320px;margin:16px auto 0">Prendre rendez-vous</a>
 </header>
@@ -170,7 +182,7 @@ document.body.innerHTML = `
     <div class="jours" id="jours"></div>
     <div class="creneaux" id="creneaux"></div>
     <p id="noteTrajet" class="muted"></p>
-    <button type="button" class="btn sec" disabled style="font-size:.9rem;padding:10px">Prévenez-moi si un créneau se libère <span class="prevu">prévu</span></button>
+    ${REEL ? '' : '<button type="button" class="btn sec" disabled style="font-size:.9rem;padding:10px">Prévenez-moi si un créneau se libère <span class="prevu">prévu</span></button>'}
   </div>
 
   <h2><span class="n">4</span>Vos coordonnées</h2>
@@ -196,7 +208,9 @@ document.body.innerHTML = `
     <details><summary>Conditions de ${esc(prenomPro)}</summary><ul>${conditionsListe.map(c => `<li>${esc(c)}</li>`).join('')}</ul></details>
     <label style="display:flex;gap:10px;margin-top:10px"><input type="checkbox" id="lu" style="accent-color:var(--accent);width:20px;height:20px;flex:none"> J’ai lu et j’accepte les conditions (retard, annulation${cond.acompte ? ', acompte' : ''}).</label>
   </div>
-  <button class="btn" id="confirmer">Confirmer le rendez-vous</button>
+  <p id="erreurRecap" class="info" role="alert" hidden></p>
+  ${REEL && !ACTIF ? '<button class="btn" id="confirmer" disabled>Réservation en ligne bientôt disponible</button><p class="muted">Rien n’a été envoyé ni enregistré.</p>'
+    : '<button class="btn" id="confirmer">Confirmer le rendez-vous</button>'}
   <button class="btn sec" id="modifier">Modifier</button>
 </section>
 
@@ -204,24 +218,24 @@ document.body.innerHTML = `
   <div class="coche">✓</div>
   <h2 id="finiTitre"></h2>
   <p id="finiTexte"></p>
-  <button class="btn" id="ics">📅 Ajouter à mon agenda</button>
+  ${REEL ? '' : `<button class="btn" id="ics">📅 Ajouter à mon agenda</button>
   <p class="muted">Démonstration : aucun message n’a été envoyé et aucune donnée n’a été enregistrée. Dans la vraie version, un e-mail de confirmation vous serait envoyé. Le fichier agenda est créé sur votre téléphone.</p>
-  <button class="btn sec" id="recommencer">Recommencer la démo</button>
+  <button class="btn sec" id="recommencer">Recommencer la démo</button>`}
 </section>
 
-  ${P.avis?.length ? `<h2>Avis <span class="prevu">avis d’exemple</span></h2>
+  ${P.avis?.length && !REEL ? `<h2>Avis <span class="prevu">avis d’exemple</span></h2>
   <div class="avis">${P.avis.map(a => `<figure><span class="etoiles" aria-label="${a.note} sur 5">${'★'.repeat(a.note)}${'☆'.repeat(5 - a.note)}</span>
     <blockquote>${esc(a.texte)}</blockquote><figcaption>${esc(a.prenom)} · ${esc(a.prestation)}</figcaption></figure>`).join('')}</div>` : ''}
 
   ${P.faq?.length ? `<h2>Infos pratiques</h2>
   <div class="faq">${P.faq.map(f => `<details><summary>${esc(f.q)}</summary><p>${esc(f.r)}</p></details>`).join('')}</div>` : ''}
 
-  <div class="pour-pros"><b>Vous êtes pro ? Votre page, sur mesure.</b><p>Couleurs, photos, prestations, infos : on la fait à votre image. On cherche 10&nbsp;pros pour tester gratuitement.</p><a class="pp-btn" href="https://www.instagram.com/planelia.fr/" rel="noopener">Nous écrire sur Instagram</a><a class="pp-mail" href="mailto:contact@planelia.fr">ou par e-mail : contact@planelia.fr</a></div>
-  <p class="signature">Réservation propulsée par <span>Planélia</span><br><a href="../index.html">Voir les autres exemples</a></p>
-  <p class="legal">Exemple fictif : aucune donnée n’est enregistrée.<br><a href="../../mentions-legales.html">Mentions légales</a> · <a href="../../confidentialite.html">Confidentialité</a></p>
+  ${REEL ? '' : `<div class="pour-pros"><b>Vous êtes pro ? Votre page, sur mesure.</b><p>Couleurs, photos, prestations, infos : on la fait à votre image. On cherche 10&nbsp;pros pour tester gratuitement.</p><a class="pp-btn" href="https://www.instagram.com/planelia.fr/" rel="noopener">Nous écrire sur Instagram</a><a class="pp-mail" href="mailto:contact@planelia.fr">ou par e-mail : contact@planelia.fr</a></div>`}
+  <p class="signature">Réservation propulsée par <span>Planélia</span>${REEL ? '' : `<br><a href="${R.racine ?? '../../'}demo/index.html">Voir les autres exemples</a>`}</p>
+  <p class="legal">${ACTIF ? 'Vos coordonnées servent uniquement à ce rendez-vous.' : REEL ? 'Aucune donnée n’est enregistrée tant que la réservation en ligne n’est pas active.' : 'Exemple fictif : aucune donnée n’est enregistrée.'}<br><a href="${R.racine ?? '../../'}mentions-legales.html">Mentions légales</a> · <a href="${R.racine ?? '../../'}confidentialite.html">Confidentialité</a></p>
 </main>
 <dialog id="zoom"><img alt=""><p></p><button type="button">Fermer</button></dialog>
-<div class="bandeau">Exemple de démonstration — Planélia est en test</div>`;
+<div class="bandeau">${esc(R.bandeau || 'Exemple de démonstration — Planélia est en test')}</div>`;
 
 // ---------- Essayez un autre style (démo polyvalente) ----------
 if (STYLES?.length) {
@@ -294,7 +308,7 @@ $('resa').addEventListener('change', e => { if (e.target.name !== 'heure') maj()
 if (!lieuxChoix) maj();
 
 const places = placesSemaine();
-if (places <= 6) { $('places').hidden = false; $('places').textContent = places ? `Plus que ${places} place${places > 1 ? 's' : ''} cette semaine` : 'Complet cette semaine'; }
+if (places <= 6 && (places || !REEL)) { $('places').hidden = false; $('places').textContent = places ? (places > 1 ? `Plus que ${places} places ${QUAND_PLACES}` : `Plus qu’une place ${QUAND_PLACES}`) : `Complet ${QUAND_PLACES}`; }
 
 // ---------- Récap, conditions, confirmation ----------
 const dateLongue = s => jours[s.jour].date.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'});
@@ -325,10 +339,11 @@ $('resa').addEventListener('submit', ev => {
   recap();
   $('resa').hidden = true; $('recap').hidden = false; $('recap').scrollIntoView();
 });
-$('recommencer').onclick = () => location.reload();
+if (!REEL) $('recommencer').onclick = () => location.reload();
 $('modifier').onclick = () => { $('recap').hidden = true; $('resa').hidden = false; };
 $('confirmer').onclick = () => {
   if (!$('lu').checked) { $('lu').focus(); $('lu').parentElement.style.color = 'var(--accent)'; return; }
+  if (ACTIF) return envoyer();
   const s = recap(), quand = `${dateLongue(s)} à ${hm(+s.heure)}`;
   const adresse = P.lieu.adresse_exacte_apres_resa || 'adresse fictive de démonstration';
   $('finiTitre').textContent = `C’est noté, ${$('prenom').value.trim()} !`;
@@ -338,6 +353,27 @@ $('confirmer').onclick = () => {
   $('ics').onclick = () => telechargerIcs(s, s.lieu === 'domicile' ? $('adresse').value : adresse);
   $('recap').hidden = true; $('fini').hidden = false; $('fini').scrollIntoView();
 };
+
+// Vraie page : la demande part au serveur, qui recalcule tout et envoie un lien de confirmation par e-mail.
+const ERREURS = {pris: 'Ce créneau vient d’être pris. Choisissez-en un autre.', trop: 'Vous avez déjà le nombre maximum de rendez-vous à venir ici.',
+  refuse: `La réservation en ligne n’est pas possible. Contactez directement ${prenomPro}.`, robot: 'La vérification anti-robot a échoué. Réessayez.',
+  invalide: 'Une information semble incorrecte. Vérifiez vos choix et vos coordonnées.', indisponible: 'Cette page n’accepte pas de réservation pour le moment.'};
+async function envoyer() {
+  const s = etat(), d = jours[s.jour].date, b = $('confirmer');
+  b.disabled = true; b.textContent = 'Envoi…'; $('erreurRecap').hidden = true;
+  const r = await R.reserver({prenom: $('prenom').value.trim(), email: $('email').value.trim(), telephone: $('tel').value.trim(), choix: {
+    prestation: +choisi('presta'), options: [...document.querySelectorAll('[name=option]:checked')].map(x => +x.value),
+    longueur: +(choisi('longueur') ?? 0), reponses: (P.questions_avant_rdv || []).map((q, k) => +(choisi('q' + k) ?? 0)),
+    lieu: s.lieu, secteur: s.zone ? +$('zone').value : null, adresse: s.lieu === 'domicile' ? $('adresse').value.trim() : null,
+    // ponytail: heure de l'appareil supposée = heure de Paris ; le serveur refuse un horaire hors grille
+    debut: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, +s.heure).toISOString()}});
+  b.disabled = false; b.textContent = 'Confirmer le rendez-vous';
+  if (r.code !== 'ok') { $('erreurRecap').textContent = ERREURS[r.code] || 'Un problème est survenu. Réessayez dans un instant.'; $('erreurRecap').hidden = false; return; }
+  $('finiTitre').textContent = `Plus qu’une étape, ${$('prenom').value.trim()} !`;
+  $('finiTexte').textContent = `Nous venons d’envoyer un e-mail à ${$('email').value.trim()}. Cliquez sur le lien qu’il contient dans les 30 minutes pour confirmer votre rendez-vous. Pensez à regarder dans les courriers indésirables.`;
+  document.querySelector('#fini .coche').textContent = '✉';
+  $('recap').hidden = true; $('fini').hidden = false; $('fini').scrollIntoView();
+}
 
 // Fichier agenda (.ics) créé sur l'appareil, rien n'est envoyé.
 function telechargerIcs(s, lieu) {
