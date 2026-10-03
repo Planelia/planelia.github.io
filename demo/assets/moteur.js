@@ -269,7 +269,7 @@ const etat = () => {
   document.querySelectorAll('[name=option]:checked').forEach(x => { const o = P.prestations[x.value]; ajouts.push({nom: o.nom, prix: o.prix, duree: o.duree_min}); });
   (P.questions_avant_rdv || []).forEach((q, k) => {
     const o = q.options?.[choisi('q' + k)];
-    if (o && (o.prix_plus || o.duree_plus)) ajouts.push({nom: o.note || o.label, prix: o.prix_plus, duree: o.duree_plus});
+    if (o && (o.prix_plus || o.duree_plus)) ajouts.push({nom: o.note || (q.question ? `${q.question.replace(/\s*\?\s*$/, '')} : ${o.label}` : o.label), prix: o.prix_plus, duree: o.duree_plus});
   });
   const somme = c => ajouts.reduce((s, a) => s + (a[c] || 0), 0);
   return {p, lieu, zone, ajouts, prix: p ? p.prix + somme('prix') : 0, dureeTot: p ? p.duree_min + somme('duree') : 0,
