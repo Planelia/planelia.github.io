@@ -13,8 +13,8 @@ const plus = (prix, min) => [prix ? `+${prix} €` : '', min ? `+${min} min` : '
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const REEL = !!R.pris;   // vraie page : pas de textes de démo, pas d'avis d'exemple
 const ACTIF = REEL && R.reserver;   // vraie page où la réservation est branchée (charger.js fournit R.reserver)
-// agenda : {jours, ouverture, fermeture, par_jour: {"6": {fermeture}}, pas, delai_min} ; pas et délai : réglages de la pro
-const A = P.agenda || R.agenda, PAS = R.pas || A.pas || 30, DELAI = A.delai_min ?? 60;
+// agenda : {jours, ouverture, fermeture, par_jour: {"6": {fermeture}}, pas, delai_min, pause} ; pas, délai et pause (15 min par défaut) : réglages de la pro
+const A = P.agenda || R.agenda, PAS = R.pas || A.pas || 30, DELAI = A.delai_min ?? 60, PAUSE = A.pause ?? 15;
 const heures = d => { const h = {...A, ...A.par_jour?.[d.getDay()]}; return [enMin(h.ouverture), enMin(h.fermeture)]; };
 const prenomPro = P.pro_prenom || P.nom.split(' ')[0];
 const studio = P.lieu.studio, domicile = P.lieu.domicile;
@@ -73,14 +73,15 @@ function joursOuverts(filtre, nb = 8) {
       { const [ouv, ferm] = heures(d); res.push({date: new Date(d), ouv, ferm, pris: agendaDu(d, ouv, ferm)}); }
   return res;
 }
-// Un créneau est libre si, trajets compris (à domicile), il ne chevauche aucun RDV existant.
-// ponytail: les RDV existants gardent un trajet fixe de 20 min ; le vrai calcul viendra avec la vue pro.
+// Un créneau est libre si son temps pris (trajet avant ; après : max(pause, trajet), comme calcul.js côté serveur)
+// ne chevauche aucun temps déjà pris. Les vrais créneaux pris (R.pris) incluent déjà trajets et pauses.
+// ponytail: démos : les faux RDV reçoivent un trajet fixe de 20 min (à domicile) et la pause de la pro.
 function creneauxLibres(jour, dureeTot, trajet) {
   const now = new Date(), tot = jour.date.toDateString() === now.toDateString() ? now.getHours()*60 + now.getMinutes() + DELAI : 0;
-  const marge = trajet ? 20 : 0, libres = [];
+  const avant = R.pris ? 0 : trajet ? 20 : 0, apres = R.pris ? 0 : Math.max(PAUSE, avant), libres = [];
   for (let t = Math.max(jour.ouv, Math.ceil(tot/PAS)*PAS); t + dureeTot <= jour.ferm; t += PAS) {
-    const a = t - trajet, b = t + dureeTot + trajet;
-    if (jour.pris.every(r => b <= r.debut - marge || a >= r.fin + marge)) libres.push(t);
+    const a = t - trajet, b = t + dureeTot + Math.max(PAUSE, trajet);
+    if (jour.pris.every(r => b <= r.debut - avant || a >= r.fin + apres)) libres.push(t);
   }
   return libres;
 }
@@ -89,7 +90,7 @@ function placesSemaine() {
   let n = 0;
   for (const j of joursOuverts(null, 7).filter(j => j.date <= FIN_PLACES)) {
     let t = -1;
-    for (const s of creneauxLibres(j, 90, 0)) if (s >= t) { n++; t = s + 90; }
+    for (const s of creneauxLibres(j, 90, 0)) if (s >= t) { n++; t = s + 90 + PAUSE; }
   }
   return n;
 }

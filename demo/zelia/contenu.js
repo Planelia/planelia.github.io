@@ -435,6 +435,7 @@ window.PRO = {
   ]
  },
  "agenda": {
+  "pause": 15,
   "jours": [
    2,
    3,
