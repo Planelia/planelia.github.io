@@ -1,4 +1,4 @@
-// Réglages de la page d'Olive & Lin : thème « naturel / minimaliste » et agenda. Le contenu est dans contenu.js.
+// Réglages de la page d'Sauge & Nacre : thème « naturel / minimaliste » et agenda. Le contenu est dans contenu.js.
 window.PRO.reglages = {
   semaineChargee: true,   // agenda fictif presque plein cette semaine (« Plus que N places » cohérent)
   theme: {

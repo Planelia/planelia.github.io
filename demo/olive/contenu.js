@@ -1,7 +1,7 @@
 // Généré par outils/integrer.js depuis demos-contenu/olive/contenu.json — ne pas modifier ici.
 window.PRO = {
  "slug": "olive",
- "nom": "Olive & Lin",
+ "nom": "Sauge & Nacre",
  "pro_prenom": "Margaux",
  "metier": "Soins des ongles naturels",
  "ville": "Nantes",
