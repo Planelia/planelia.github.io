@@ -193,7 +193,7 @@ document.body.innerHTML = `
   <input type="email" id="email" autocomplete="email" inputmode="email" required aria-describedby="aideEmail">
   <p id="aideEmail" class="muted" style="margin:6px 0 0">Vous recevrez un e-mail pour confirmer votre rendez-vous.</p>
   <label class="champ" for="tel">Téléphone</label>
-  <input type="tel" id="tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78" pattern="^(\\+33\\s?|0)[1-9]([\\s.\\-]?\\d{2}){4}$">
+  <input type="tel" id="tel" autocomplete="tel" inputmode="tel" placeholder="06 39 98 12 34" pattern="^(\\+33\\s?|0)[1-9]([\\s.\\-]?\\d{2}){4}$">
   <div id="blocAdresse" hidden>
     <label class="champ" for="adresse">Adresse du rendez-vous</label>
     <input type="text" id="adresse" autocomplete="street-address">
