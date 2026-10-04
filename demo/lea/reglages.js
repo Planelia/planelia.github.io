@@ -1,4 +1,4 @@
-// Réglages de la page de Léa : thème 2 « motifs manucure » (validé) et agenda. Le contenu est dans contenu.js.
+// Réglages de la page de Maëlle : thème 2 « motifs manucure » (validé) et agenda. Le contenu est dans contenu.js.
 window.PRO.reglages = {
   avatar: 'avatar.svg',                       // main dessinée validée (en-tête A) au lieu de photos/profil.jpg
   theme: {

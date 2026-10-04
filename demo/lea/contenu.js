@@ -1,7 +1,7 @@
 // Généré par outils/integrer.js depuis demos-contenu/lea/contenu.json — ne pas modifier ici.
 window.PRO = {
  "slug": "lea",
- "nom": "Ondelune",
+ "nom": "Orvanelle",
  "metier": "Prothésiste ongulaire",
  "ville": "Lyon",
  "exemple_fictif": true,
@@ -231,7 +231,7 @@ window.PRO = {
      "duree_plus": 0
     },
     {
-     "label": "Oui, faite par Léa",
+     "label": "Oui, faite par Maëlle",
      "prix_plus": 0,
      "duree_plus": 0
     },
@@ -311,7 +311,7 @@ window.PRO = {
    "prenom": "Camille",
    "note": 5,
    "prestation": "Pose gel",
-   "texte": "Pose impeccable qui a tenu un mois. Léa est douce et très pro.",
+   "texte": "Pose impeccable qui a tenu un mois. Maëlle est douce et très pro.",
    "exemple": true
   },
   {
