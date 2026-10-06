@@ -21,88 +21,215 @@
 <link rel="stylesheet" href="assets/fonts/polices.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Planélia","url":"https://planelia.fr/","logo":"https://planelia.fr/logo.png","email":"contact@planelia.fr","sameAs":["https://www.instagram.com/planelia.fr/"]}</script>
 <style>
-:root{--sauge:#4d6b57;--sauge-clair:#dfe8dc;--creme:#fbf6ee;--terra:#c97f5d;--terra-fonce:#a65f3f;--rose:#e8a596;--texte:#2f3a33;--doux:#66716a;--ligne:#e6dfd3}
+:root{--sauge:#4d6b57;--sauge-fonce:#3d5746;--sauge-clair:#dfe8dc;--creme:#fbf6ee;--terra-fonce:#a65f3f;--rose:#e8a596;--texte:#2f3a33;--doux:#5f6a63;--ligne:#e6dfd3}
 *{box-sizing:border-box}
-body{margin:0;background:var(--creme);color:var(--texte);font:17px/1.5 Inter,system-ui,sans-serif}
-.contenu{max-width:640px;margin:0 auto;padding:0 20px}
-h1,h2{font-family:"Caveat Brush",cursive;font-weight:400;color:var(--sauge);margin:0;line-height:1.1}
-h1{font-size:2.6rem}
-h2{font-size:2rem;margin-bottom:14px}
-section{padding:36px 0}
-.hero{background:var(--sauge-clair);text-align:center;padding:24px 0 40px}
-.logo{display:block;width:fit-content;margin:0 auto}
-.hero img{width:150px;height:150px;display:block;margin:0 auto 4px}
-.hero p{margin:14px auto 0;max-width:28em}
-.etiquette{display:inline-block;background:#fff;color:var(--terra-fonce);border-radius:99px;padding:4px 14px;font-size:.85rem;font-weight:600;margin-top:16px}
-.btn{display:block;text-align:center;text-decoration:none;font-weight:600;border-radius:14px;padding:15px;margin-top:22px;background:var(--sauge);color:#fff}
-.btn.terra{background:var(--terra-fonce)}
-.cible{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-.cible span{background:#fff;border:1px solid var(--ligne);border-radius:99px;padding:6px 14px;font-size:.95rem}
-.points{display:grid;gap:12px}
-.point{background:#fff;border:1px solid var(--ligne);border-radius:16px;padding:16px 18px;display:flex;gap:14px}
-.point .ico{font-size:1.5rem;line-height:1}
-.point b{display:block;margin-bottom:2px}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--creme);color:var(--texte);font:17px/1.55 Inter,system-ui,sans-serif}
+a{color:var(--sauge)}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--terra-fonce);outline-offset:3px;border-radius:6px}
+.large{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:"DM Serif Display",Georgia,serif;font-weight:400;color:var(--sauge-fonce);line-height:1.15;margin:0}
+h1{font-size:2.5rem}
+h2{font-size:2rem;margin-bottom:10px}
+h3{font-size:1.25rem}
+.accent{font-family:"Caveat Brush",cursive;color:var(--terra-fonce);font-size:1.15em}
+.chapeau{color:var(--doux);margin:0 0 26px;max-width:36em}
+section{padding:56px 0}
+/* menu */
+.menu{position:sticky;top:0;z-index:5;background:rgba(251,246,238,.96);border-bottom:1px solid var(--ligne)}
+.menu .large{display:flex;align-items:center;gap:20px;height:62px}
+.marque{display:flex;align-items:center;gap:8px;font:400 1.7rem "Caveat Brush",cursive;color:var(--sauge);text-decoration:none;margin-right:auto}
+.marque img{width:36px;height:36px}
+.menu nav a{color:var(--texte);text-decoration:none;font-size:.95rem}
+.menu nav a:hover{color:var(--sauge)}
+.menu nav{display:flex;gap:20px}
+.btn{display:inline-block;text-align:center;text-decoration:none;font-weight:600;border-radius:12px;padding:14px 22px;background:var(--terra-fonce);color:#fff}
+.btn.second{background:#fff;color:var(--sauge-fonce);border:1.5px solid var(--sauge)}
+.menu .btn{padding:9px 16px;font-size:.92rem}
+/* haut de page */
+.haut{background:var(--sauge-clair);padding:48px 0 56px}
+.haut .large{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+.haut p.sous{font-size:1.1rem;margin:18px 0 0;max-width:30em}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.rassure{margin:18px 0 0;font-size:.92rem;color:var(--texte)}
+.rassure span+span::before{content:"·";margin:0 8px;color:var(--sauge)}
+.telephone{justify-self:center;width:270px;border:10px solid var(--texte);border-radius:38px;overflow:hidden;background:#fff;box-shadow:0 18px 40px rgba(47,58,51,.22)}
+.telephone img{display:block;width:100%;height:auto}
+.legende{text-align:center;font-size:.82rem;color:var(--texte);margin-top:10px}
+/* galerie */
+.galerie{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.carte-demo{display:block;text-decoration:none;color:var(--texte);background:#fff;border:1px solid var(--ligne);border-radius:18px;overflow:hidden}
+.carte-demo:hover{border-color:var(--sauge)}
+.carte-demo .ecran{height:300px;overflow:hidden;border-bottom:1px solid var(--ligne)}
+.carte-demo img{display:block;width:100%;height:auto}
+.carte-demo div.txt{padding:12px 14px 14px}
+.carte-demo b{display:block}
+.carte-demo span{font-size:.88rem;color:var(--doux)}
+.note{font-size:.85rem;color:var(--doux);margin-top:14px}
+/* étapes */
+.etapes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:e;list-style:none;padding:0;margin:0}
+.etapes li{background:#fff;border:1px solid var(--ligne);border-radius:18px;padding:22px 20px}
+.etapes li::before{counter-increment:e;content:counter(e);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--sauge);color:#fff;font-weight:600;margin-bottom:12px}
+.etapes p{margin:6px 0 0;color:var(--doux);font-size:.95rem}
+/* points forts */
+.fond-blanc{background:#fff;border-top:1px solid var(--ligne);border-bottom:1px solid var(--ligne)}
+.points{display:grid;grid-template-columns:repeat(3,1fr);gap:26px 30px}
+.point svg{width:30px;height:30px;stroke:var(--sauge);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.point b{display:block;margin:8px 0 4px}
 .point p{margin:0;color:var(--doux);font-size:.95rem}
-.prevu{display:inline-block;background:var(--rose);color:var(--texte);font-size:.72rem;font-weight:600;border-radius:6px;padding:1px 7px;margin-left:6px;vertical-align:2px}
-.test{background:#fff;border:2px dashed var(--rose);border-radius:20px;padding:22px 20px}
-.test p{margin:8px 0}
-.mail{text-align:center;font-size:.95rem}
-.mail a{color:var(--sauge)}
-.test .sous{text-align:center;font-size:.85rem;color:var(--doux);margin-top:6px}
-.prix{font-size:.95rem;color:var(--doux)}
-.liens-metier{font-size:.95rem;margin:14px 0 0}
-.liens-metier a{color:var(--sauge)}
+/* pionnières + tarif */
+.offre{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:start}
+.offre ul{padding-left:20px;margin:14px 0 0}
+.offre li{margin:6px 0}
+.tarif{background:#fff;border:1px solid var(--ligne);border-radius:20px;padding:26px 24px;box-shadow:0 8px 24px rgba(47,58,51,.08)}
+.tarif .gros{font-family:"DM Serif Display",Georgia,serif;font-size:2.4rem;color:var(--sauge-fonce);line-height:1}
+.tarif .gros small{font:400 1rem Inter,system-ui,sans-serif;color:var(--doux)}
+.tarif ul{list-style:none;padding:0;margin:16px 0 0}
+.tarif li{padding:8px 0;border-top:1px solid var(--ligne);font-size:.95rem}
+.tarif .btn{display:block;margin-top:18px}
+.tarif .petit{font-size:.85rem;color:var(--doux);text-align:center;margin:10px 0 0}
+/* FAQ */
+.faq{max-width:760px}
+details{background:#fff;border:1px solid var(--ligne);border-radius:14px;padding:0 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600;padding:16px 0;list-style-position:outside}
+details p{margin:0 0 16px;color:var(--texte)}
 footer{text-align:center;color:var(--doux);font-size:.85rem;padding:28px 20px 36px;border-top:1px solid var(--ligne)}
 footer a{color:var(--sauge)}
+@media (max-width:860px){
+  .haut .large,.offre{grid-template-columns:1fr}
+  .galerie{grid-template-columns:repeat(2,1fr)}
+  .points{grid-template-columns:repeat(2,1fr)}
+  .etapes{grid-template-columns:1fr}
+  .menu nav{display:none}
+}
+@media (max-width:540px){
+  h1{font-size:2.05rem}
+  h2{font-size:1.7rem}
+  section{padding:44px 0}
+  .haut{padding:32px 0 44px}
+  .points{grid-template-columns:1fr}
+  .carte-demo .ecran{height:230px}
+  .actions .btn{flex:1 1 100%}
+  .telephone{width:240px}
+}
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="contenu">
-    <a class="logo" href="https://planelia.fr/"><img src="logo.png" alt="Planélia, accueil"></a>
-    <h1>Votre clientèle réserve en ligne, sur une page à votre nom</h1>
-    <p>Fini les rendez-vous calés à la main entre deux poses : votre clientèle choisit la prestation, le lieu et l’horaire, et vous retrouvez tout dans votre agenda.</p>
-    <span class="etiquette">En test — bientôt disponible</span>
-    <a class="btn" href="demo/index.html">Voir un exemple de page</a>
+<header class="menu">
+  <div class="large">
+    <a class="marque" href="https://planelia.fr/"><img src="logo.png" alt="" width="36" height="36">Planélia</a>
+    <nav aria-label="Menu principal"><a href="#fonctionnalites">Fonctionnalités</a><a href="#demos">Démos</a><a href="#tarif">Tarif</a><a href="#faq">FAQ</a></nav>
+    <a class="btn" href="https://tally.so/r/gDRAOJ?ref=site" rel="noopener">Tester</a>
   </div>
 </header>
 
-<main class="contenu">
-  <section>
-    <h2>Pour qui ?</h2>
-    <p>Pour les <b>pros des ongles</b> et de <b>l’esthétique</b> à leur compte, qui reçoivent à la maison ou se déplacent à domicile.</p>
-    <div class="cible"><span>💅 Ongles</span><span>🌿 Esthétique</span><span>🏠 Chez vous</span><span>🚗 À domicile</span></div>
-    <p class="liens-metier">Vous êtes <a href="logiciel-prothesiste-ongulaire-a-domicile/">prothésiste ongulaire à domicile</a> ou <a href="reservation-estheticienne-a-domicile/">esthéticienne à domicile</a> ?</p>
-  </section>
+<div class="haut">
+  <div class="large">
+    <div>
+      <h1>Votre clientèle réserve en ligne, sur une page <span class="accent">à votre image</span></h1>
+      <p class="sous">Pour les pros des ongles et de l’esthétique à leur compte, chez elles ou à domicile. Votre clientèle choisit la prestation, le lieu et l’horaire, et vous recevez chaque rendez-vous par e-mail.</p>
+      <div class="actions">
+        <a class="btn" href="https://tally.so/r/gDRAOJ?ref=site" rel="noopener">Tester gratuitement</a>
+        <a class="btn second" href="demo/index.html">Voir une démo</a>
+      </div>
+      <p class="rassure"><span>0 commission</span><span>sans engagement</span><span>données sauvegardées en Europe</span></p>
+    </div>
+    <div>
+      <div class="telephone"><img src="assets/apercus/lea.webp" width="480" height="1039" alt="Exemple de page de réservation Planélia : Orvanelle, prothésiste ongulaire fictive à Lyon"></div>
+      <p class="legende">Page d’exemple (pro fictive)</p>
+    </div>
+  </div>
+</div>
 
-  <section>
-    <h2>Pensé pour votre façon de travailler</h2>
-    <div class="points">
-      <div class="point"><span class="ico">🚗</span><div><b>Pensé pour le domicile</b><p>Vous définissez vos secteurs, les jours où vous y passez et vos frais de déplacement. Les horaires proposés tiennent compte du trajet entre deux rendez-vous.</p></div></div>
-      <div class="point"><span class="ico">🔒</span><div><b>Votre adresse reste privée</b><p>Si vous recevez chez vous, seul votre quartier est affiché. L’adresse exacte n’est donnée qu’une fois le rendez-vous pris.</p></div></div>
-      <div class="point"><span class="ico">⏱️</span><div><b>2 minutes, sans compte à créer</b><p>On choisit la prestation et l’horaire, on laisse son prénom, son téléphone et son e-mail, et c’est réservé. Pas d’application à installer, pas de mot de passe.</p></div></div>
-      <div class="point"><span class="ico">✂️</span><div><b>Une page sur mesure</b><p>Les pages d’exemple ne sont qu’un point de départ&nbsp;: couleurs, photos, textes, prestations, informations à afficher… votre page est faite à votre image, et on y met ce que vous nous demandez.</p></div></div>
-      <div class="point"><span class="ico">🌸</span><div><b>Votre page, rien que vous</b><p>Pas d’autres pros affichés à côté de vous : votre clientèle ne voit que vos prestations, vos photos et vos avis.</p></div></div>
-      <div class="point"><span class="ico">🤝</span><div><b>Un abonnement fixe, zéro commission</b><p>Vous payez le même prix chaque mois, quel que soit le nombre de rendez-vous. Aucun pourcentage prélevé sur vos prestations.</p></div></div>
-      <div class="point"><span class="ico">🔔</span><div><b>Rappels automatiques</b><p>Un rappel envoyé par e-mail la veille du rendez-vous, pour limiter les oublis.</p></div></div>
+<main>
+  <section id="demos">
+    <div class="large">
+      <h2>Votre page, à votre image</h2>
+      <p class="chapeau">Même outil de réservation, quatre styles opposés. Couleurs, photos, textes, prestations, infos pratiques : votre page est faite sur mesure, avec vous.</p>
+      <div class="galerie">
+        <a class="carte-demo" href="demo/lea/index.html"><div class="ecran"><img src="assets/apercus/lea.webp" width="480" height="1039" loading="lazy" alt="Page d’exemple Orvanelle, style doux et girly"></div><div class="txt"><b>Orvanelle</b><span>Doux et girly · Lyon</span></div></a>
+        <a class="carte-demo" href="demo/olive/index.html"><div class="ecran"><img src="assets/apercus/olive.webp" width="480" height="1039" loading="lazy" alt="Page d’exemple Sauge &amp; Nacre, style naturel et minimaliste"></div><div class="txt"><b>Sauge &amp; Nacre</b><span>Naturel et minimaliste · Nantes</span></div></a>
+        <a class="carte-demo" href="demo/zelia/index.html"><div class="ecran"><img src="assets/apercus/zelia.webp" width="480" height="1039" loading="lazy" alt="Page d’exemple Zélia Volt, style audacieux et nail art"></div><div class="txt"><b>Zélia Volt</b><span>Bold et nail art · Marseille</span></div></a>
+        <a class="carte-demo" href="demo/polyvalente/index.html"><div class="ecran"><img src="assets/apercus/polyvalente.webp" width="480" height="1039" loading="lazy" alt="Page d’exemple Mille Teintes, cinq ambiances au choix"></div><div class="txt"><b>Mille Teintes</b><span>Cinq ambiances en un clic · Bordeaux</span></div></a>
+      </div>
+      <p class="note">Pros, avis et adresses fictifs : ce sont des exemples de démonstration.</p>
     </div>
   </section>
 
-  <section>
-    <div class="test">
-      <h2>En test : on cherche 10&nbsp;pros</h2>
-      <p>Planélia est en cours de construction. Nous cherchons 10 pros pour l’essayer gratuitement et nous dire ce qui leur manque.</p>
-      <p class="prix">Gratuit pendant le test, puis 19 €/mois sans engagement, 1er mois offert. Votre tarif baisse avec votre fidélité : 17 €/mois dès la 2e année, puis 15 €/mois (prix indicatifs).</p>
-      <a class="btn terra" href="https://tally.so/r/gDRAOJ?ref=site" rel="noopener">Je veux tester gratuitement</a>
-      <p class="sous">2 minutes, sans engagement</p>
-      <p class="mail">ou écrivez-nous sur <a href="https://www.instagram.com/planelia.fr/" rel="noopener">Instagram</a>, ou par e-mail : <a href="mailto:contact@planelia.fr">contact@planelia.fr</a></p>
+  <section class="fond-blanc">
+    <div class="large">
+      <h2>Comment ça marche</h2>
+      <ol class="etapes">
+        <li><h3>On crée votre page avec vous</h3><p>Vos prestations, vos prix, vos secteurs, vos photos et vos couleurs.</p></li>
+        <li><h3>Vous partagez votre lien</h3><p>Sur Instagram, par message, sur votre carte de visite : votre clientèle réserve en 2&nbsp;minutes.</p></li>
+        <li><h3>Vous recevez chaque rendez-vous par e-mail</h3><p>La cliente a confirmé par e-mail, et un rappel lui part tout seul la veille.</p></li>
+      </ol>
     </div>
+  </section>
+
+  <section id="fonctionnalites">
+    <div class="large">
+      <h2>Pensé pour votre façon de travailler</h2>
+      <p class="chapeau">Seulement ce qui fonctionne déjà, sans promesse en l’air.</p>
+      <div class="points">
+        <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><b>Pensé pour le domicile</b><p>Vos secteurs, vos frais de déplacement et le temps de trajet entre deux rendez-vous sont pris en compte automatiquement.</p></div>
+        <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><b>Votre adresse reste privée</b><p>Si vous recevez chez vous, seul votre quartier est affiché. L’adresse exacte n’est donnée qu’une fois le rendez-vous confirmé.</p></div>
+        <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>2 minutes, sans compte à créer</b><p>La cliente choisit la prestation et l’horaire, laisse son prénom, son téléphone et son e-mail. Pas d’application, pas de mot de passe.</p></div>
+        <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><b>Des prestations qui s’ajustent</b><p>Options et questions avant le rendez-vous : le prix et la durée s’ajustent tout seuls.</p></div>
+        <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg><b>Jamais deux fois le même créneau</b><p>Seuls les créneaux libres sont proposés, et une pause est prévue automatiquement entre deux rendez-vous.</p></div>
+        <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><b>Rappel la veille</b><p>Un e-mail de rappel part tout seul la veille du rendez-vous, pour limiter les oublis.</p></div>
+        <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-4-8-11V5l8-3 8 3v5c0 7-8 11-8 11z"/><path d="M9 12l2 2 4-4"/></svg><b>Protégée contre les abus</b><p>Protection contre les robots et les réservations abusives. Vos données sont sauvegardées chaque nuit, chiffrées, en Europe.</p></div>
+        <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-8-8"/><path d="M15 9.5A3.5 3.5 0 0 0 9 12a3.5 3.5 0 0 0 6 2.5M7.5 11h5M7.5 13h5"/></svg><b>Zéro commission</b><p>Un abonnement fixe, quel que soit le nombre de rendez-vous. Aucun pourcentage prélevé sur vos prestations.</p></div>
+        <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg><b>Votre page, rien que vous</b><p>Pas d’autres pros affichées à côté de vous : votre clientèle ne voit que vos prestations, vos photos et vos avis.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tarif" class="fond-blanc">
+    <div class="large offre">
+      <div>
+        <h2>Programme pionnières : 10&nbsp;places</h2>
+        <p>Planélia est en test. Nous ouvrons 10&nbsp;places à des pros qui l’utilisent gratuitement pendant le test et nous disent ce qui leur manque.</p>
+        <ul>
+          <li>Votre page créée avec vous, à votre image</li>
+          <li>Gratuit pendant toute la durée du test</li>
+          <li>Vos retours orientent les prochaines fonctions</li>
+        </ul>
+        <p class="note">Une question avant de vous lancer ? Écrivez-nous sur <a href="https://www.instagram.com/planelia.fr/" rel="noopener">Instagram</a> ou à <a href="mailto:contact@planelia.fr">contact@planelia.fr</a>.</p>
+      </div>
+      <div class="tarif">
+        <p class="gros" style="margin:0">0&nbsp;€ <small>pendant le test</small></p>
+        <ul>
+          <li>Ensuite <b>19&nbsp;€/mois</b>, sans engagement</li>
+          <li>1er mois offert</li>
+          <li><b>17&nbsp;€/mois</b> dès la 2e année, puis <b>15&nbsp;€/mois</b></li>
+          <li>0 commission sur vos rendez-vous</li>
+        </ul>
+        <a class="btn" href="https://tally.so/r/gDRAOJ?ref=site" rel="noopener">Je veux une place</a>
+        <p class="petit">2 minutes, sans engagement</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="large"><div class="faq">
+      <h2>Questions fréquentes</h2>
+      <details><summary>C’est quoi, Planélia&nbsp;?</summary><p>Une page de réservation à votre nom. Votre clientèle y choisit la prestation, le lieu et l’horaire, confirme par e-mail, et vous recevez chaque rendez-vous par e-mail. Planélia est actuellement en test.</p></details>
+      <details><summary>C’est pour qui&nbsp;?</summary><p>Pour les pros des ongles et de l’esthétique à leur compte, qui reçoivent chez elles, se déplacent à domicile, ou les deux.</p></details>
+      <details><summary>Combien ça coûte&nbsp;?</summary><p>Gratuit pendant le test. Ensuite 19&nbsp;€/mois, 1er mois offert, puis 17&nbsp;€/mois dès la 2e année et 15&nbsp;€/mois ensuite. Aucune commission sur vos rendez-vous.</p></details>
+      <details><summary>Y a-t-il un engagement&nbsp;?</summary><p>Non. Le test est gratuit et l’abonnement qui suit est sans engagement.</p></details>
+      <details><summary>Et mes données, mon adresse&nbsp;?</summary><p>Si vous recevez chez vous, seul votre quartier est affiché : l’adresse exacte n’est donnée qu’une fois le rendez-vous confirmé. Les données sont sauvegardées chaque nuit, chiffrées, en Europe. Détails sur la page <a href="confidentialite.html">Confidentialité</a>.</p></details>
+      <details><summary>Faut-il installer une application&nbsp;?</summary><p>Non. Vos clientes réservent depuis leur navigateur, sans compte ni mot de passe, et vous recevez les rendez-vous par e-mail. Un espace pro pour les gérer arrive bientôt.</p></details>
+      <details><summary>Comment tester&nbsp;?</summary><p>Remplissez le formulaire (2&nbsp;minutes). Nous revenons vers vous pour créer votre page ensemble.</p></details>
+      <details><summary>Ma page peut-elle vraiment être personnalisée&nbsp;?</summary><p>Oui : couleurs, photos, textes, prestations avec leurs options, infos pratiques. Les <a href="demo/index.html">pages d’exemple</a> montrent des styles opposés, mais votre page est faite sur mesure, avec ce que vous nous demandez.</p></details>
+    </div></div>
   </section>
 </main>
 
 <footer>
   <p>Planélia · réservation en ligne pour pros de la beauté à leur compte · en test</p>
   <p>Aucun cookie, aucun traceur. · <a href="https://www.instagram.com/planelia.fr/" rel="noopener">@planelia.fr</a> · <a href="mailto:contact@planelia.fr">contact@planelia.fr</a></p>
+  <p><a href="logiciel-prothesiste-ongulaire-a-domicile/">Prothésiste ongulaire à domicile</a> · <a href="reservation-estheticienne-a-domicile/">Esthéticienne à domicile</a></p>
   <p><a href="mentions-legales.html">Mentions légales</a> · <a href="confidentialite.html">Confidentialité</a> · <a href="credits.html">Crédits</a></p>
 </footer>
 </body>
