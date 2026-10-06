@@ -4,6 +4,14 @@
 // Vraie page (rdv.planelia.fr) : charger.js remplit PRO depuis la base, et reglages.pris = créneaux occupés [[Date, Date]…].
 (() => {
 const P = window.PRO, R = P.reglages;
+// Nombres forcés : prix, durées et frais sont insérés sans esc() dans le gabarit ; un texte glissé là devient NaN, jamais du HTML.
+const nombres = (o, ...cles) => { if (o) for (const k of cles) if (k in o) o[k] = Number(o[k]); };
+P.prestations.forEach(p => nombres(p, 'prix', 'duree_min'));
+P.questions_avant_rdv?.forEach(q => q.options?.forEach(o => nombres(o, 'prix_plus', 'duree_plus')));
+P.longueurs?.choix?.forEach(l => nombres(l, 'prix_plus', 'duree_plus'));
+P.secteurs?.forEach(s => nombres(s, 'frais', 'trajet_min'));
+P.avis?.forEach(a => nombres(a, 'note'));
+nombres(P.conditions?.acompte, 'montant');
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
 const hm = m => `${Math.floor(m/60)}h${String(m%60).padStart(2,'0')}`;
@@ -210,7 +218,8 @@ document.body.innerHTML = `
     <label style="display:flex;gap:10px;margin-top:10px"><input type="checkbox" id="lu" style="accent-color:var(--accent);width:20px;height:20px;flex:none"> J’ai lu et j’accepte les conditions (retard, annulation${cond.acompte ? ', acompte' : ''}).</label>
   </div>
   <p id="erreurRecap" class="info" role="alert" hidden></p>
-  ${REEL && !ACTIF ? '<button class="btn" id="confirmer" disabled>Réservation en ligne bientôt disponible</button><p class="muted">Rien n’a été envoyé ni enregistré.</p>'
+  ${R.apercu ? '<button class="btn" id="confirmer" disabled>Aperçu : la réservation est désactivée</button><p class="muted">Rien n’est envoyé depuis un aperçu.</p>'
+    : REEL && !ACTIF ? '<button class="btn" id="confirmer" disabled>Réservation en ligne bientôt disponible</button><p class="muted">Rien n’a été envoyé ni enregistré.</p>'
     : '<button class="btn" id="confirmer">Confirmer le rendez-vous</button>'}
   <button class="btn sec" id="modifier">Modifier</button>
 </section>
