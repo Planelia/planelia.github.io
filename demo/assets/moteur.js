@@ -110,9 +110,10 @@ const dimanche = new Date(); dimanche.setDate(dimanche.getDate() + (7 - dimanche
 // Fenêtre du badge de places : vraie page = d'ici dimanche ; démos = 7 jours glissants (sinon « Complet » chaque samedi soir).
 const FIN_PLACES = REEL ? dimanche : new Date(Date.now() + 7 * 864e5), QUAND_PLACES = REEL ? 'cette semaine' : 'ces 7 prochains jours';
 function agendaDu(date, OUV, FERM) {
-  if (R.pris) {   // vrais créneaux occupés, ramenés en minutes de ce jour-là (heure de l'appareil)
-    const j0 = new Date(date); j0.setHours(0, 0, 0, 0);
-    const min = d => Math.min(1440, Math.max(0, Math.round((d - j0) / 60000)));
+  if (R.pris) {   // vrais créneaux occupés, ramenés à l'heure MURALE de ce jour-là (heure de l'appareil) : pas en minutes
+    // écoulées depuis minuit, fausses d'1 h les jours de changement d'heure (25 octobre, 29 mars)
+    const j0 = new Date(date); j0.setHours(0, 0, 0, 0); const j1 = new Date(j0); j1.setDate(j1.getDate() + 1);
+    const min = d => d <= j0 ? 0 : d >= j1 ? 1440 : d.getHours() * 60 + d.getMinutes();
     return R.pris.map(([a, b]) => ({debut: min(a), fin: min(b)})).filter(r => r.fin > r.debut && r.debut < 1440 && r.fin > 0);
   }
   const n = date.getDate(), L = FERM - OUV;
