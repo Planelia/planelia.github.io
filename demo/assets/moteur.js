@@ -194,7 +194,7 @@ const NOMS_CONTACT = {instagram: 'Instagram', whatsapp: 'WhatsApp', telephone: '
 function mentionsHTML() {
   const M = P.mentions || {}, societe = M.statut === 'Société', ligne = (nom, v) => v ? `<dt>${nom}</dt><dd>${esc(v)}</dd>` : '';
   const id = M.siret ? `${M.siret.length === 9 ? 'SIREN' : 'SIRET'} ${M.siret}` : '';
-  return `<dialog id="mentions" aria-labelledby="mentionsTitre"><h2 id="mentionsTitre">Mentions</h2><dl>
+  return `<dialog id="mentions" aria-labelledby="mentionsTitre"><h2 id="mentionsTitre">Infos légales du salon</h2><dl>
   ${ligne(societe ? 'Dénomination sociale' : 'Nom et prénoms', M.nom)}${ligne('Nom commercial', M.nom_commercial)}${ligne('Statut', M.statut)}
   ${societe ? ligne('Forme', M.forme) + ligne('Capital', M.capital && M.capital + ' €') : ''}${ligne(M.siret?.length === 9 ? 'SIREN' : 'SIRET', M.siret)}
   ${ligne('Adresse', M.adresse)}${ligne('Téléphone', M.telephone)}${ligne('E-mail', M.email)}
@@ -324,7 +324,7 @@ ${BLOCS.map(id => BLOC[id]()).join('\n')}
 
   ${REEL ? '' : `<div class="pour-pros"><b>Vous êtes pro ? Votre page, sur mesure.</b><p>Couleurs, photos, prestations, infos : on la fait à votre image. On cherche 10&nbsp;pros pour tester gratuitement.</p><a class="pp-btn" href="https://tally.so/r/gDRAOJ?ref=demo" rel="noopener">Tester gratuitement</a><a class="pp-mail" href="https://www.instagram.com/planelia.fr/" rel="noopener">ou nous écrire sur Instagram</a><a class="pp-mail" href="mailto:contact@planelia.fr">ou par e-mail : contact@planelia.fr</a></div>`}
   <p class="signature">Réservation propulsée par <span>Planélia</span>${REEL ? '' : `<br><a href="${R.racine ?? '../../'}demo/index.html">Voir les autres exemples</a>`}</p>
-  <p class="legal">${ACTIF ? 'Vos coordonnées servent uniquement à ce rendez-vous.' : REEL ? 'Aucune donnée n’est enregistrée tant que la réservation en ligne n’est pas active.' : 'Exemple fictif : aucune donnée n’est enregistrée.'}<br><a href="${R.racine ?? '../../'}mentions-legales.html">Mentions légales</a> · <a href="${R.racine ?? '../../'}confidentialite.html">Confidentialité</a>${REEL ? ` · <a href="${esc(signaler())}">Signaler cette page</a> · <a href="#mentions" id="lienMentions">Mentions</a>` : ''}</p>
+  <p class="legal">${ACTIF ? 'Vos coordonnées servent uniquement à ce rendez-vous.' : REEL ? 'Aucune donnée n’est enregistrée tant que la réservation en ligne n’est pas active.' : 'Exemple fictif : aucune donnée n’est enregistrée.'}<br><a href="${R.racine ?? '../../'}mentions-legales.html">Mentions légales</a> · <a href="${R.racine ?? '../../'}confidentialite.html">Confidentialité</a>${REEL ? ` · <a href="${esc(signaler())}">Signaler cette page</a> · <a href="#mentions" id="lienMentions">Infos légales du salon</a>` : ''}</p>
 </main>
 <dialog id="zoom"><img alt=""><p></p><button type="button">Fermer</button></dialog>
 ${REEL ? mentionsHTML() : ''}
