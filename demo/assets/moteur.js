@@ -23,8 +23,8 @@ const REEL = !!R.pris;   // vraie page : pas de textes de démo, pas d'avis d'ex
 const ACTIF = REEL && R.reserver;   // vraie page où la réservation est branchée (charger.js fournit R.reserver)
 // Signalement d'un contenu (DSA art. 16) : e-mail prérempli vers contact@, rien d'autre n'est transmis.
 const signaler = () => 'mailto:contact@planelia.fr?subject=' + encodeURIComponent(`Signalement : ${P.nom || 'page Planélia'}`) + '&body=' + encodeURIComponent(
-  `Adresse de la page signalée : ${location.origin + location.pathname}\n\nCe qui pose problème, et pourquoi c'est illicite selon vous (soyez précis) :\n\n\n`
-  + 'Vos nom et prénom :\nVotre adresse e-mail :\n\nJe déclare de bonne foi que les informations de ce signalement sont exactes et complètes.\n');
+  `Adresse de la page signalée : ${location.origin + location.pathname}\n\nÉlément précis concerné (texte, photo, nom…) :\n\nCe qui pose problème, et pourquoi c'est illicite selon vous (soyez précis) :\n\n\n`
+  + 'Vos nom et prénom (facultatif si le signalement concerne un mineur) :\nVotre adresse e-mail (facultatif si le signalement concerne un mineur) :\n\nJe déclare de bonne foi que les informations de ce signalement sont exactes et complètes.\n');
 // agenda : {jours, ouverture, fermeture, par_jour: {"6": {fermeture}}, pas, delai_min, pause} ; pas, délai et pause (15 min par défaut) : réglages de la pro
 const A = P.agenda || R.agenda, PAS = R.pas || A.pas || 30, DELAI = A.delai_min ?? 60, PAUSE = A.pause ?? 15;
 const heures = d => { const h = {...A, ...A.par_jour?.[d.getDay()]}; return [enMin(h.ouverture), enMin(h.fermeture)]; };
