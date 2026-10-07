@@ -21,6 +21,10 @@ const plus = (prix, min) => [prix ? `+${prix} €` : '', min ? `+${min} min` : '
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const REEL = !!R.pris;   // vraie page : pas de textes de démo, pas d'avis d'exemple
 const ACTIF = REEL && R.reserver;   // vraie page où la réservation est branchée (charger.js fournit R.reserver)
+// Signalement d'un contenu (DSA art. 16) : e-mail prérempli vers contact@, rien d'autre n'est transmis.
+const signaler = () => 'mailto:contact@planelia.fr?subject=' + encodeURIComponent(`Signalement : ${P.nom || 'page Planélia'}`) + '&body=' + encodeURIComponent(
+  `Adresse de la page signalée : ${location.origin + location.pathname}\n\nCe qui pose problème, et pourquoi c'est illicite selon vous (soyez précis) :\n\n\n`
+  + 'Vos nom et prénom :\nVotre adresse e-mail :\n\nJe déclare de bonne foi que les informations de ce signalement sont exactes et complètes.\n');
 // agenda : {jours, ouverture, fermeture, par_jour: {"6": {fermeture}}, pas, delai_min, pause} ; pas, délai et pause (15 min par défaut) : réglages de la pro
 const A = P.agenda || R.agenda, PAS = R.pas || A.pas || 30, DELAI = A.delai_min ?? 60, PAUSE = A.pause ?? 15;
 const heures = d => { const h = {...A, ...A.par_jour?.[d.getDay()]}; return [enMin(h.ouverture), enMin(h.fermeture)]; };
@@ -244,7 +248,7 @@ document.body.innerHTML = `
 
   ${REEL ? '' : `<div class="pour-pros"><b>Vous êtes pro ? Votre page, sur mesure.</b><p>Couleurs, photos, prestations, infos : on la fait à votre image. On cherche 10&nbsp;pros pour tester gratuitement.</p><a class="pp-btn" href="https://tally.so/r/gDRAOJ?ref=demo" rel="noopener">Tester gratuitement</a><a class="pp-mail" href="https://www.instagram.com/planelia.fr/" rel="noopener">ou nous écrire sur Instagram</a><a class="pp-mail" href="mailto:contact@planelia.fr">ou par e-mail : contact@planelia.fr</a></div>`}
   <p class="signature">Réservation propulsée par <span>Planélia</span>${REEL ? '' : `<br><a href="${R.racine ?? '../../'}demo/index.html">Voir les autres exemples</a>`}</p>
-  <p class="legal">${ACTIF ? 'Vos coordonnées servent uniquement à ce rendez-vous.' : REEL ? 'Aucune donnée n’est enregistrée tant que la réservation en ligne n’est pas active.' : 'Exemple fictif : aucune donnée n’est enregistrée.'}<br><a href="${R.racine ?? '../../'}mentions-legales.html">Mentions légales</a> · <a href="${R.racine ?? '../../'}confidentialite.html">Confidentialité</a></p>
+  <p class="legal">${ACTIF ? 'Vos coordonnées servent uniquement à ce rendez-vous.' : REEL ? 'Aucune donnée n’est enregistrée tant que la réservation en ligne n’est pas active.' : 'Exemple fictif : aucune donnée n’est enregistrée.'}<br><a href="${R.racine ?? '../../'}mentions-legales.html">Mentions légales</a> · <a href="${R.racine ?? '../../'}confidentialite.html">Confidentialité</a>${REEL ? ` · <a href="${esc(signaler())}">Signaler cette page</a>` : ''}</p>
 </main>
 <dialog id="zoom"><img alt=""><p></p><button type="button">Fermer</button></dialog>
 <div class="bandeau">${esc(R.bandeau || 'Exemple de démonstration — Planélia est en test')}</div>`;
