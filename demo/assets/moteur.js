@@ -50,10 +50,52 @@ const avatar = R.avatar || photos.profil;
 // Thème : variables CSS et CSS propre à la pro (polices servies par site/assets/fonts/polices.css)
 // Styles (facultatif, contenu.json ou reglages.js) : [{nom, apercu, vars, css}] = ambiances proposées par « Essayez un autre style », appliquées par-dessus R.theme.
 const STYLES = P.styles || R.styles;
+// <couleurs> Couleurs perso (V3 lot 5) : la pro choisit seulement une couleur principale et un fond (+ photo de fond) ;
+// toutes les variables en sont calculées ici. Contraste : mêmes paires et seuil (4,5:1) que outils/contraste.js.
+const HEX = /^#[0-9a-f]{6}$/;
+const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const enHex = a => '#' + a.map(x => Math.round(Math.max(0, Math.min(255, x))).toString(16).padStart(2, '0')).join('');
+const melange = (a, b, t) => { const B = rgb(b); return enHex(rgb(a).map((x, i) => x + (B[i] - x) * t)); };   // t = 0 : a ; 1 : b
+const lum = h => { const [r, g, b] = rgb(h).map(v => (v /= 255) <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4); return .2126 * r + .7152 * g + .0722 * b; };
+const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + .05) / (y + .05); };
+const PAIRES = [['texte', 'carte'], ['texte', 'fond-uni'], ['doux', 'carte'], ['doux', 'fond-uni'], ['titre', 'fond-uni'],
+  ['accent-texte', 'accent'], ['creneau-texte', 'creneau'], ['texte', 'accent-fond'], ['accent', 'carte'], ['texte', 'info']];
+const meilleur = (fond, ...c) => c.reduce((m, x) => ratio(x, fond) > ratio(m, fond) ? x : m);
+function couleursVars(c) {
+  if (!c || !HEX.test(c.principale) || !HEX.test(c.fond)) return null;
+  const f = c.fond, a = c.principale, texte = meilleur(f, '#111111', '#ffffff'), clair = texte === '#111111';
+  const carte = clair ? '#ffffff' : melange(f, '#000000', .25);
+  let doux = texte;   // le plus proche du fond qui reste lisible sur la carte et le fond
+  for (let t = .05; t <= .6; t += .05) { const d = melange(texte, f, t); if (ratio(d, carte) < 4.5 || ratio(d, f) < 4.5) break; doux = d; }
+  const vars = {fond: f, 'fond-uni': f, texte, titre: texte, doux, carte, champ: carte, bord: melange(carte, texte, .18),
+    info: melange(carte, a, .1), accent: a, 'accent-texte': meilleur(a, '#ffffff', '#111111'), 'accent-fond': melange(carte, a, .12),
+    creneau: a, 'creneau-texte': meilleur(a, '#ffffff', '#111111'), entete: `linear-gradient(135deg,${melange(f, a, .25)},${f})`};
+  // ponytail: photo de fond = blocs sur cartes à 94 % ; contraste calculé sur la carte seule, pas sur la photo vue au travers
+  const css = typeof c.fond_photo === 'string' && /^[\w\-./:%]+$/.test(c.fond_photo)
+    ? `body{background:${f} url("${c.fond_photo}") center/cover fixed}header,main{background:color-mix(in srgb,var(--carte) 94%,transparent)}main{border-radius:var(--rayon);padding-block:8px}` : '';
+  return {vars, css};
+}
+const illisibles = v => PAIRES.filter(([x, y]) => ratio(v[x], v[y]) < 4.5);
+// « Corriger pour moi » : la teinte la plus proche qui passe (fond, puis couleur principale, éclaircis ou assombris).
+function corriger(c) {
+  const r = {...c}, pousse = (cle, ok) => {
+    for (const cible of ['#000000', '#ffffff']) for (let t = .05; t <= 1.0001; t += .05) {
+      const x = melange(c[cle], cible, t); r[cle] = x; if (ok()) return;
+    }
+    r[cle] = c[cle];
+  };
+  const ok = () => !illisibles(couleursVars(r).vars).length;
+  if (!ok()) pousse('fond', () => ratio(couleursVars(r).vars.texte, r.fond) >= 4.5);
+  if (!ok()) pousse('principale', ok);
+  return r;
+}
+window.planeliaCouleurs = {couleursVars, illisibles, corriger, ratio, PAIRES};
+// </couleurs>
+const perso = couleursVars(P.couleurs);
 const theme = st => {
   document.documentElement.removeAttribute('style');
-  for (const [k, v] of Object.entries({...R.theme.vars, ...st?.vars})) document.documentElement.style.setProperty('--' + k, v);
-  $('cssPro').textContent = (R.theme.css || '') + (st?.css || '');
+  for (const [k, v] of Object.entries({...R.theme.vars, ...st?.vars, ...perso?.vars})) document.documentElement.style.setProperty('--' + k, v);
+  $('cssPro').textContent = (R.theme.css || '') + (st?.css || '') + (perso?.css || '');
 };
 document.head.insertAdjacentHTML('beforeend', '<style id="cssPro"></style>');
 theme();
@@ -143,30 +185,34 @@ if (REEL) delete cond.acompte;   // acompte = option payante pas encore codée :
 const conditionsListe = [...(cond.a_cocher || []), ...(cond.acompte ? [cond.acompte.texte] : [])];
 const NOMS_CONTACT = {instagram: 'Instagram', whatsapp: 'WhatsApp', telephone: 'Appeler', tiktok: 'TikTok'};
 
-document.body.innerHTML = `
-<div class="banniere" ${photos.banniere ? `style="background-image:url('${esc(photos.banniere)}')"` : ''}></div>
-<header>
-  ${avatar ? `<img class="avatar" src="${esc(avatar)}" alt="${esc(P.nom)}">` : `<div class="avatar mono" aria-hidden="true">${esc(P.nom[0])}</div>`}
-  <h1>${esc(P.nom)}</h1>
-  <p class="metier">${esc(P.metier)} · ${esc(P.ville)}</p>
-  ${STYLES?.length ? `<div class="styles" role="group" aria-labelledby="stylesTitre"><span id="stylesTitre">Essayez un autre style</span>
-    ${STYLES.map((st, i) => `<button type="button" data-style="${i}" aria-pressed="${!i}"><i style="background:${esc(st.apercu)}"></i>${esc(st.nom)}</button>`).join('')}</div>` : ''}
-  ${P.accroche ? `<p class="accroche">${esc(P.accroche)}</p>` : ''}
-  <p class="bio">${esc(P.bio)}</p>
-  <div class="badges"><span class="badge">📍 ${esc(P.lieu.adresse_publique)}</span>${P.horaires ? `<span class="badge">🕒 ${esc(P.horaires)}</span>` : ''}</div>
-  ${P.badges?.length ? `<div class="confiance">${P.badges.map(c => `<span>${esc(c)}</span>`).join('')}</div>` : ''}
-  ${REEL ? '' : `<div class="contacts">${Object.keys(P.contact || {}).filter(k => NOMS_CONTACT[k])
-    .map(k => `<button type="button" disabled title="Désactivé dans la démo">${NOMS_CONTACT[k]}</button>`).join('')}</div>
-  <p class="muted" style="margin:6px 0 0;font-size:.75rem">Contacts désactivés dans la démo</p>`}
-  <span class="places" id="places" hidden></span>
-  <a class="btn" href="#resa" style="max-width:320px;margin:16px auto 0">Prendre rendez-vous</a>
-</header>
-<main>
-  ${galerie.length ? `<h2>Réalisations</h2>
+// Mentions (V3 lot 5, champs et lignes fixes donnés par Juridique le 07/10) : remplies par la pro, texte brut ; champs vides
+// non affichés (publication avec des vides : règle REGLES.mentionsObligatoires côté serveur).
+function mentionsHTML() {
+  const M = P.mentions || {}, societe = M.statut === 'Société', ligne = (nom, v) => v ? `<dt>${nom}</dt><dd>${esc(v)}</dd>` : '';
+  const id = M.siret ? `${M.siret.length === 9 ? 'SIREN' : 'SIRET'} ${M.siret}` : '';
+  return `<dialog id="mentions" aria-labelledby="mentionsTitre"><h2 id="mentionsTitre">Mentions</h2><dl>
+  ${ligne(societe ? 'Dénomination sociale' : 'Nom et prénoms', M.nom)}${ligne('Nom commercial', M.nom_commercial)}${ligne('Statut', M.statut)}
+  ${societe ? ligne('Forme', M.forme) + ligne('Capital', M.capital && M.capital + ' €') : ''}${ligne(M.siret?.length === 9 ? 'SIREN' : 'SIRET', M.siret)}
+  ${ligne('Adresse', M.adresse)}${ligne('Téléphone', M.telephone)}${ligne('E-mail', M.email)}
+  ${societe ? ligne('Directeur de la publication', M.directeur_publication) : ''}${ligne('Titre ou diplôme', M.titre_diplome)}</dl>
+  ${M.nom ? `<p>Cette page est éditée par ${esc(M.nom)}${M.statut ? ` (${esc(M.statut)})` : ''}${id ? `, ${esc(id)}` : ''}.</p>` : ''}
+  <p>Hébergement technique : Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, États-Unis, pour le compte du service Planélia (contact@planelia.fr).</p>
+  <p>Données personnelles : <a href="${R.racine ?? '../../'}confidentialite.html">planelia.fr/confidentialite</a>.</p>
+  <p><a href="${esc(signaler())}">Signaler cette page</a></p>
+  <button type="button" class="btn sec" autofocus>Fermer</button></dialog>`;
+}
+// Blocs libres (V3 lot 5) : P.sections = [{id, titre?, masque?}] dans l'ordre voulu ; blocs absents de la liste ensuite,
+// dans l'ordre par défaut ; titres par défaut si rien n'est choisi ; la réservation n'est jamais masquée.
+const S = Object.fromEntries((Array.isArray(P.sections) ? P.sections : []).map(x => [x.id, x]));
+const titre = (id, defaut) => esc(S[id]?.titre || defaut);
+const BLOC = {
+  realisations: () => `
+  ${galerie.length ? `<h2>${titre('realisations', 'Réalisations')}</h2>
   <div class="galerie">${galerie.map((g, i) => g.fichier
     ? `<button type="button" class="vignette" data-i="${i}" aria-label="Agrandir : ${esc(g.legende)}"><img src="${esc(g.fichier)}" alt="${esc(g.legende)}" loading="lazy"></button>`
-    : `<div class="vignette vide">Photo à venir</div>`).join('')}</div>` : ''}
-
+    : `<div class="vignette vide">Photo à venir</div>`).join('')}</div>` : ''}`,
+  reservation: () => `
+${S.reservation?.titre ? `<h2>${esc(S.reservation.titre)}</h2>` : ''}
 <form id="resa" novalidate>
   <h2><span class="n">1</span>Prestation</h2>
   ${prestaHTML}
@@ -237,20 +283,47 @@ document.body.innerHTML = `
   ${REEL ? '' : `<button class="btn" id="ics">📅 Ajouter à mon agenda</button>
   <p class="muted">Démonstration : aucun message n’a été envoyé et aucune donnée n’a été enregistrée. Dans la vraie version, un e-mail de confirmation vous serait envoyé. Le fichier agenda est créé sur votre téléphone.</p>
   <button class="btn sec" id="recommencer">Recommencer la démo</button>`}
-</section>
-
-  ${P.avis?.length && !REEL ? `<h2>Avis <span class="prevu">avis d’exemple</span></h2>
+</section>`,
+  avis: () => `
+  ${P.avis?.length && !REEL ? `<h2>${titre('avis', 'Avis')} <span class="prevu">avis d’exemple</span></h2>
   <div class="avis">${P.avis.map(a => `<figure><span class="etoiles" aria-label="${a.note} sur 5">${'★'.repeat(a.note)}${'☆'.repeat(5 - a.note)}</span>
-    <blockquote>${esc(a.texte)}</blockquote><figcaption>${esc(a.prenom)} · ${esc(a.prestation)}</figcaption></figure>`).join('')}</div>` : ''}
+    <blockquote>${esc(a.texte)}</blockquote><figcaption>${esc(a.prenom)} · ${esc(a.prestation)}</figcaption></figure>`).join('')}</div>` : ''}`,
+  infos: () => `
+  ${P.faq?.length ? `<h2>${titre('infos', 'Infos pratiques')}</h2>
+  <div class="faq">${P.faq.map(f => `<details><summary>${esc(f.q)}</summary><p>${esc(f.r)}</p></details>`).join('')}</div>` : ''}`
+};
+const BLOCS = [...new Set([...Object.keys(S), ...Object.keys(BLOC)])].filter(id => Object.hasOwn(BLOC, id) && (id === 'reservation' || !S[id]?.masque));
 
-  ${P.faq?.length ? `<h2>Infos pratiques</h2>
-  <div class="faq">${P.faq.map(f => `<details><summary>${esc(f.q)}</summary><p>${esc(f.r)}</p></details>`).join('')}</div>` : ''}
+document.body.innerHTML = `
+<div class="banniere" ${photos.banniere ? `style="background-image:url('${esc(photos.banniere)}')"` : ''}></div>
+<header>
+  ${avatar ? `<img class="avatar" src="${esc(avatar)}" alt="${esc(P.nom)}">` : `<div class="avatar mono" aria-hidden="true">${esc(P.nom[0])}</div>`}
+  <h1>${esc(P.nom)}</h1>
+  <p class="metier">${esc(P.metier)} · ${esc(P.ville)}</p>
+  ${STYLES?.length ? `<div class="styles" role="group" aria-labelledby="stylesTitre"><span id="stylesTitre">Essayez un autre style</span>
+    ${STYLES.map((st, i) => `<button type="button" data-style="${i}" aria-pressed="${!i}"><i style="background:${esc(st.apercu)}"></i>${esc(st.nom)}</button>`).join('')}</div>` : ''}
+  ${P.accroche ? `<p class="accroche">${esc(P.accroche)}</p>` : ''}
+  <p class="bio">${esc(P.bio)}</p>
+  <div class="badges"><span class="badge">📍 ${esc(P.lieu.adresse_publique)}</span>${P.horaires ? `<span class="badge">🕒 ${esc(P.horaires)}</span>` : ''}</div>
+  ${P.badges?.length ? `<div class="confiance">${P.badges.map(c => `<span>${esc(c)}</span>`).join('')}</div>` : ''}
+  ${REEL ? '' : `<div class="contacts">${Object.keys(P.contact || {}).filter(k => NOMS_CONTACT[k])
+    .map(k => `<button type="button" disabled title="Désactivé dans la démo">${NOMS_CONTACT[k]}</button>`).join('')}</div>
+  <p class="muted" style="margin:6px 0 0;font-size:.75rem">Contacts désactivés dans la démo</p>`}
+  <span class="places" id="places" hidden></span>
+  <a class="btn" href="#resa" style="max-width:320px;margin:16px auto 0">Prendre rendez-vous</a>
+</header>
+<main>
+${BLOCS.map(id => BLOC[id]()).join('\n')}
+
+
+
 
   ${REEL ? '' : `<div class="pour-pros"><b>Vous êtes pro ? Votre page, sur mesure.</b><p>Couleurs, photos, prestations, infos : on la fait à votre image. On cherche 10&nbsp;pros pour tester gratuitement.</p><a class="pp-btn" href="https://tally.so/r/gDRAOJ?ref=demo" rel="noopener">Tester gratuitement</a><a class="pp-mail" href="https://www.instagram.com/planelia.fr/" rel="noopener">ou nous écrire sur Instagram</a><a class="pp-mail" href="mailto:contact@planelia.fr">ou par e-mail : contact@planelia.fr</a></div>`}
   <p class="signature">Réservation propulsée par <span>Planélia</span>${REEL ? '' : `<br><a href="${R.racine ?? '../../'}demo/index.html">Voir les autres exemples</a>`}</p>
-  <p class="legal">${ACTIF ? 'Vos coordonnées servent uniquement à ce rendez-vous.' : REEL ? 'Aucune donnée n’est enregistrée tant que la réservation en ligne n’est pas active.' : 'Exemple fictif : aucune donnée n’est enregistrée.'}<br><a href="${R.racine ?? '../../'}mentions-legales.html">Mentions légales</a> · <a href="${R.racine ?? '../../'}confidentialite.html">Confidentialité</a>${REEL ? ` · <a href="${esc(signaler())}">Signaler cette page</a>` : ''}</p>
+  <p class="legal">${ACTIF ? 'Vos coordonnées servent uniquement à ce rendez-vous.' : REEL ? 'Aucune donnée n’est enregistrée tant que la réservation en ligne n’est pas active.' : 'Exemple fictif : aucune donnée n’est enregistrée.'}<br><a href="${R.racine ?? '../../'}mentions-legales.html">Mentions légales</a> · <a href="${R.racine ?? '../../'}confidentialite.html">Confidentialité</a>${REEL ? ` · <a href="${esc(signaler())}">Signaler cette page</a> · <a href="#mentions" id="lienMentions">Mentions</a>` : ''}</p>
 </main>
 <dialog id="zoom"><img alt=""><p></p><button type="button">Fermer</button></dialog>
+${REEL ? mentionsHTML() : ''}
 <div class="bandeau">${esc(R.bandeau || 'Exemple de démonstration — Planélia est en test')}</div>`;
 
 // ---------- Essayez un autre style (démo polyvalente) ----------
@@ -265,6 +338,10 @@ if (STYLES?.length) {
 }
 
 // ---------- Galerie : agrandissement au toucher ----------
+if ($('mentions')) {
+  $('lienMentions').onclick = e => { e.preventDefault(); $('mentions').showModal(); };
+  $('mentions').querySelector('button').onclick = () => $('mentions').close();
+}
 const zoom = $('zoom');
 const grille = document.querySelector('.galerie');
 if (grille) grille.onclick = e => {
