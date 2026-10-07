@@ -38,8 +38,9 @@ const principales = P.prestations.filter(p => !p.option), options = P.prestation
 const longueurs = P.longueurs?.choix || [];
 const aLongueur = p => p.longueur && (!P.longueurs?.applique_a || P.longueurs.applique_a.includes(p.id));
 const photos = P.photos || {};
-// Grille de 3 : on garde un multiple de 3 photos pour ne pas laisser de trou.
-const galerie = photos.galerie?.length >= 3 ? photos.galerie.slice(0, photos.galerie.length - photos.galerie.length % 3) : Array(6).fill({});
+// Grille de 3 : on garde un multiple de 3 photos pour ne pas laisser de trou. Moins de 3 : cases « Photo à venir » sur une
+// démo, galerie masquée sur une vraie page (la pro retire ses photos depuis son espace, jamais de case vide chez elle).
+const galerie = photos.galerie?.length >= 3 ? photos.galerie.slice(0, photos.galerie.length - photos.galerie.length % 3) : REEL ? [] : Array(6).fill({});
 const avatar = R.avatar || photos.profil;
 
 // Thème : variables CSS et CSS propre à la pro (polices servies par site/assets/fonts/polices.css)
@@ -157,10 +158,10 @@ document.body.innerHTML = `
   <a class="btn" href="#resa" style="max-width:320px;margin:16px auto 0">Prendre rendez-vous</a>
 </header>
 <main>
-  <h2>Réalisations</h2>
+  ${galerie.length ? `<h2>Réalisations</h2>
   <div class="galerie">${galerie.map((g, i) => g.fichier
     ? `<button type="button" class="vignette" data-i="${i}" aria-label="Agrandir : ${esc(g.legende)}"><img src="${esc(g.fichier)}" alt="${esc(g.legende)}" loading="lazy"></button>`
-    : `<div class="vignette vide">Photo à venir</div>`).join('')}</div>
+    : `<div class="vignette vide">Photo à venir</div>`).join('')}</div>` : ''}
 
 <form id="resa" novalidate>
   <h2><span class="n">1</span>Prestation</h2>
@@ -260,7 +261,8 @@ if (STYLES?.length) {
 
 // ---------- Galerie : agrandissement au toucher ----------
 const zoom = $('zoom');
-document.querySelector('.galerie').onclick = e => {
+const grille = document.querySelector('.galerie');
+if (grille) grille.onclick = e => {
   const b = e.target.closest('.vignette[data-i]'); if (!b) return;
   const g = galerie[b.dataset.i];
   zoom.querySelector('img').src = g.fichier; zoom.querySelector('img').alt = g.legende; zoom.querySelector('p').textContent = g.legende;
