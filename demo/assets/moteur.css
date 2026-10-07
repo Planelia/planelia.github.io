@@ -25,9 +25,9 @@ h3.cat{font-size:1rem;margin:18px 0 8px;color:var(--doux);font-family:var(--poli
 [hidden]{display:none!important}
 
 /* En-tête */
-.banniere{height:150px;background:var(--entete);background-size:cover;background-position:center}
+.banniere{position:relative;height:150px;background:var(--entete);overflow:hidden}.banniere>img,.avatar>img{display:block;width:100%;height:100%;object-fit:cover}
 header{text-align:center;padding:0 16px 8px}
-.avatar{position:relative;width:104px;height:104px;border-radius:50%;margin:-52px auto 10px;display:block;object-fit:cover;border:4px solid var(--carte);background:var(--carte);box-shadow:var(--ombre)}
+.avatar{position:relative;width:104px;height:104px;border-radius:50%;margin:-52px auto 10px;display:block;overflow:hidden;border:4px solid var(--carte);background:var(--carte);box-shadow:var(--ombre)}
 .mono{display:grid;place-items:center;background:var(--accent);color:var(--accent-texte);font:var(--titre-graisse) 2.6rem var(--police-titre)}
 header h1{font-size:2.1rem}
 .metier{color:var(--doux);margin:4px 0 0;font-weight:500}

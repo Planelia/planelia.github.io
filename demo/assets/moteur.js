@@ -46,6 +46,10 @@ const photos = P.photos || {};
 // démo, galerie masquée sur une vraie page (la pro retire ses photos depuis son espace, jamais de case vide chez elle).
 const galerie = photos.galerie?.length >= 3 ? photos.galerie.slice(0, photos.galerie.length - photos.galerie.length % 3) : REEL ? [] : Array(6).fill({});
 const avatar = R.avatar || photos.profil;
+// Cadrage (bannière, profil) choisi par la pro : image entière, point visé x/y (%) et zoom (%, depuis ce point). Nombres
+// re-bornés ici (jamais de texte dans le style) ; zoom ≥ 100 % depuis un point du cadre : aucun vide possible.
+const cadrage = c => { const n = (v, a, b, d) => Number.isInteger(v) && v >= a && v <= b ? v : d, x = n(c?.x, 0, 100, 50), y = n(c?.y, 0, 100, 50);
+  return `object-position:${x}% ${y}%;transform-origin:${x}% ${y}%;transform:scale(${n(c?.zoom, 100, 300, 100) / 100})`; };
 
 // Thème : variables CSS et CSS propre à la pro (polices servies par site/assets/fonts/polices.css)
 // Styles (facultatif, contenu.json ou reglages.js) : [{nom, apercu, vars, css}] = ambiances proposées par « Essayez un autre style », appliquées par-dessus R.theme.
@@ -295,9 +299,9 @@ ${S.reservation?.titre ? `<h2>${esc(S.reservation.titre)}</h2>` : ''}
 const BLOCS = [...new Set([...Object.keys(S), ...Object.keys(BLOC)])].filter(id => Object.hasOwn(BLOC, id) && (id === 'reservation' || !S[id]?.masque));
 
 document.body.innerHTML = `
-<div class="banniere" ${photos.banniere ? `style="background-image:url('${esc(photos.banniere)}')"` : ''}></div>
+<div class="banniere">${photos.banniere ? `<img src="${esc(photos.banniere)}" alt="" style="${cadrage(photos.cadrage?.banniere)}">` : ''}</div>
 <header>
-  ${avatar ? `<img class="avatar" src="${esc(avatar)}" alt="${esc(P.nom)}">` : `<div class="avatar mono" aria-hidden="true">${esc(P.nom[0])}</div>`}
+  ${avatar ? `<div class="avatar"><img src="${esc(avatar)}" alt="${esc(P.nom)}" style="${R.avatar ? '' : cadrage(photos.cadrage?.profil)}"></div>` : `<div class="avatar mono" aria-hidden="true">${esc(P.nom[0])}</div>`}
   <h1>${esc(P.nom)}</h1>
   <p class="metier">${esc(P.metier)} · ${esc(P.ville)}</p>
   ${STYLES?.length ? `<div class="styles" role="group" aria-labelledby="stylesTitre"><span id="stylesTitre">Essayez un autre style</span>
