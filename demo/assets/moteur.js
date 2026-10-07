@@ -285,8 +285,7 @@ ${S.reservation?.titre ? `<h2>${esc(S.reservation.titre)}</h2>` : ''}
   <div class="coche">✓</div>
   <h2 id="finiTitre"></h2>
   <p id="finiTexte"></p>
-  ${REEL ? '' : `<button class="btn" id="ics">📅 Ajouter à mon agenda</button>
-  <p class="muted">Démonstration : aucun message n’a été envoyé et aucune donnée n’a été enregistrée. Dans la vraie version, un e-mail de confirmation vous serait envoyé. Le fichier agenda est créé sur votre téléphone.</p>
+  ${REEL ? '' : `<p class="muted">Démonstration : aucun message n’a été envoyé et aucune donnée n’a été enregistrée. Dans la vraie version, un e-mail de confirmation vous serait envoyé.</p>
   <button class="btn sec" id="recommencer">Recommencer la démo</button>`}
 </section>`,
   avis: () => `
@@ -450,7 +449,6 @@ $('confirmer').onclick = () => {
   $('finiTexte').textContent = s.lieu === 'domicile'
     ? `${prenomPro} viendra chez vous ${quand}. Vous recevriez un e-mail de confirmation et un rappel la veille.`
     : `Rendez-vous ${quand}, au ${adresse}. Vous recevriez cette adresse par e-mail, avec un rappel la veille.`;
-  $('ics').onclick = () => telechargerIcs(s, s.lieu === 'domicile' ? $('adresse').value : adresse);
   $('recap').hidden = true; $('fini').hidden = false; $('fini').scrollIntoView();
 };
 
@@ -476,18 +474,4 @@ async function envoyer() {
   $('recap').hidden = true; $('fini').hidden = false; $('fini').scrollIntoView();
 }
 
-// Fichier agenda (.ics) créé sur l'appareil, rien n'est envoyé.
-function telechargerIcs(s, lieu) {
-  const d = jours[s.jour].date, p2 = n => String(n).padStart(2, '0');
-  const ts = m => `${d.getFullYear()}${p2(d.getMonth()+1)}${p2(d.getDate())}T${p2(Math.floor(m/60))}${p2(m%60)}00`;
-  const txt = t => t.replace(/[\\,;]/g, c => '\\' + c);
-  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Planelia//Demo//FR', 'BEGIN:VEVENT',
-    `UID:${Date.now()}@demo.planelia`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`,
-    `DTSTART:${ts(+s.heure)}`, `DTEND:${ts(+s.heure + s.dureeTot)}`,
-    `SUMMARY:${txt(`${s.p.nom} — ${P.nom}`)}`, `LOCATION:${txt(lieu)}`,
-    `DESCRIPTION:${txt('Exemple de démonstration Planélia')}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([ics], {type: 'text/calendar'}));
-  a.download = 'rendez-vous.ics'; a.click();
-}
 })();
