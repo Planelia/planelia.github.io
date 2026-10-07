@@ -216,7 +216,8 @@ document.body.innerHTML = `
   <dl id="recapListe"></dl>
   <div class="conditions">
     <details><summary>Conditions de ${esc(prenomPro)}</summary><ul>${conditionsListe.map(c => `<li>${esc(c)}</li>`).join('')}</ul></details>
-    <label style="display:flex;gap:10px;margin-top:10px"><input type="checkbox" id="lu" style="accent-color:var(--accent);width:20px;height:20px;flex:none"> J’ai lu et j’accepte les conditions (retard, annulation${cond.acompte ? ', acompte' : ''}).</label>
+    <label style="display:flex;gap:10px;margin-top:10px"><input type="checkbox" id="lu" aria-describedby="erreurLu" style="accent-color:var(--accent);width:20px;height:20px;flex:none"> J’ai lu et j’accepte les conditions (retard, annulation${cond.acompte ? ', acompte' : ''}).</label>
+    <p id="erreurLu" class="info" role="alert" hidden>Cochez la case pour confirmer.</p>
   </div>
   <p id="erreurRecap" class="info" role="alert" hidden></p>
   ${R.apercu ? '<button class="btn" id="confirmer" disabled>Aperçu : la réservation est désactivée</button><p class="muted">Rien n’est envoyé depuis un aperçu.</p>'
@@ -353,8 +354,9 @@ $('resa').addEventListener('submit', ev => {
 });
 if (!REEL) $('recommencer').onclick = () => location.reload();
 $('modifier').onclick = () => { $('recap').hidden = true; $('resa').hidden = false; };
+$('lu').onchange = () => { if ($('lu').checked) { $('erreurLu').hidden = true; $('lu').removeAttribute('aria-invalid'); } };
 $('confirmer').onclick = () => {
-  if (!$('lu').checked) { $('lu').focus(); $('lu').parentElement.style.color = 'var(--accent)'; return; }
+  if (!$('lu').checked) { $('erreurLu').hidden = false; $('lu').setAttribute('aria-invalid', 'true'); $('lu').focus(); return; }
   if (ACTIF) return envoyer();
   const s = recap(), quand = `${dateLongue(s)} à ${hm(+s.heure)}`;
   const adresse = P.lieu.adresse_exacte_apres_resa || 'adresse fictive de démonstration';
@@ -368,7 +370,7 @@ $('confirmer').onclick = () => {
 
 // Vraie page : la demande part au serveur, qui recalcule tout et envoie un lien de confirmation par e-mail.
 const ERREURS = {pris: 'Ce créneau vient d’être pris. Choisissez-en un autre.', trop: 'Vous avez déjà le nombre maximum de rendez-vous à venir ici.',
-  refuse: `La réservation en ligne n’est pas possible. Contactez directement ${prenomPro}.`, robot: 'La vérification anti-robot a échoué. Réessayez.',
+  refuse: `La réservation en ligne n’est pas possible. Contactez directement ${prenomPro}.`, robot: 'La vérification anti-robot n’a pas abouti. Réessayez dans un instant.',
   invalide: 'Une information semble incorrecte. Vérifiez vos choix et vos coordonnées.', indisponible: 'Cette page n’accepte pas de réservation pour le moment.',
   page_modifiee: 'Cette page vient d’être mise à jour. Elle se recharge : refaites votre choix.'};
 async function envoyer() {
