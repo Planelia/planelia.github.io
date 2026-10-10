@@ -76,7 +76,7 @@ window.PRO = {
    ],
    "tenue": "2 à 3 semaines de netteté",
    "conseils": "Huile cuticules chaque soir pour garder l'effet.",
-   "photo": "photos/r5.jpg"
+   "photo": "photos/r5.webp"
   },
   {
    "id": "russe-semi",
@@ -93,7 +93,7 @@ window.PRO = {
    ],
    "tenue": "3 semaines",
    "conseils": "Le semi pousse proprement : pas d'effet « repousse » visible avant 2 semaines.",
-   "photo": "photos/r1.jpg"
+   "photo": "photos/r1.webp"
   },
   {
    "id": "semi-naturel",
@@ -110,7 +110,7 @@ window.PRO = {
    ],
    "tenue": "2 à 3 semaines",
    "conseils": "Portez des gants pour la vaisselle et le ménage.",
-   "photo": "photos/r3.jpg"
+   "photo": "photos/r3.webp"
   },
   {
    "id": "renfort",
@@ -126,7 +126,7 @@ window.PRO = {
    ],
    "tenue": "3 à 4 semaines",
    "conseils": "Idéal pour laisser pousser ses ongles en douceur.",
-   "photo": "photos/r2.jpg"
+   "photo": "photos/r2.webp"
   },
   {
    "id": "french-lait",
@@ -142,7 +142,7 @@ window.PRO = {
    ],
    "tenue": "3 semaines",
    "conseils": "Le rendu le plus discret au bureau.",
-   "photo": "photos/r6.jpg"
+   "photo": "photos/r6.webp"
   },
   {
    "id": "soin-mains",
@@ -159,7 +159,7 @@ window.PRO = {
    ],
    "tenue": "—",
    "conseils": "À ajouter à n'importe quelle manucure pour un vrai moment de pause.",
-   "photo": "photos/r4.jpg"
+   "photo": "photos/r4.webp"
   },
   {
    "id": "pieds",
@@ -307,31 +307,31 @@ window.PRO = {
   }
  ],
  "photos": {
-  "profil": "photos/profil.jpg",
-  "banniere": "photos/banniere.jpg",
+  "profil": "photos/profil.webp",
+  "banniere": "photos/banniere.webp",
   "galerie": [
    {
-    "fichier": "photos/r1.jpg",
+    "fichier": "photos/r1.webp",
     "legende": "Nude et détails dorés"
    },
    {
-    "fichier": "photos/r2.jpg",
+    "fichier": "photos/r2.webp",
     "legende": "Amande naturelle renforcée"
    },
    {
-    "fichier": "photos/r3.jpg",
+    "fichier": "photos/r3.webp",
     "legende": "Semi nude tout doux"
    },
    {
-    "fichier": "photos/r4.jpg",
+    "fichier": "photos/r4.webp",
     "legende": "Mains soignées, ongles courts"
    },
    {
-    "fichier": "photos/r5.jpg",
+    "fichier": "photos/r5.webp",
     "legende": "Manucure russe en cours"
    },
    {
-    "fichier": "photos/r6.jpg",
+    "fichier": "photos/r6.webp",
     "legende": "Effet lait et French fine"
    }
   ]

@@ -63,7 +63,7 @@ window.PRO = {
    ],
    "tenue": "3 à 4 semaines",
    "conseils": "Remplissage conseillé toutes les 3 à 4 semaines.",
-   "photo": "photos/r3.jpg",
+   "photo": "photos/r3.webp",
    "longueur": true
   },
   {
@@ -96,7 +96,7 @@ window.PRO = {
    ],
    "tenue": "3 semaines",
    "conseils": "Idéal pour des ongles courts qui cassent.",
-   "photo": "photos/r1.jpg"
+   "photo": "photos/r1.webp"
   },
   {
    "id": "semi",
@@ -113,7 +113,7 @@ window.PRO = {
    ],
    "tenue": "2 à 3 semaines",
    "conseils": "Portez des gants pour le ménage.",
-   "photo": "photos/r2.jpg"
+   "photo": "photos/r2.webp"
   },
   {
    "id": "french",
@@ -129,7 +129,7 @@ window.PRO = {
    ],
    "tenue": "3 à 4 semaines",
    "conseils": "Le baby boomer laisse moins voir la repousse.",
-   "photo": "photos/r5.jpg",
+   "photo": "photos/r5.webp",
    "longueur": true
   },
   {
@@ -160,7 +160,7 @@ window.PRO = {
    ],
    "tenue": "Comme la pose",
    "conseils": "Envoyez votre idée à la réservation.",
-   "photo": "photos/r7.jpg"
+   "photo": "photos/r7.webp"
   },
   {
    "id": "nailart-plus",
@@ -175,7 +175,7 @@ window.PRO = {
    ],
    "tenue": "Comme la pose",
    "conseils": "Prévoir 30 min de plus.",
-   "photo": "photos/r4.jpg"
+   "photo": "photos/r4.webp"
   },
   {
    "id": "depose",
@@ -359,39 +359,39 @@ window.PRO = {
   }
  ],
  "photos": {
-  "profil": "photos/profil.jpg",
-  "banniere": "photos/banniere.jpg",
+  "profil": "photos/profil.webp",
+  "banniere": "photos/banniere.webp",
   "galerie": [
    {
-    "fichier": "photos/r1.jpg",
+    "fichier": "photos/r1.webp",
     "legende": "Rose lacté sur ongles courts"
    },
    {
-    "fichier": "photos/r2.jpg",
+    "fichier": "photos/r2.webp",
     "legende": "Semi rose vif"
    },
    {
-    "fichier": "photos/r3.jpg",
+    "fichier": "photos/r3.webp",
     "legende": "Pointes roses dégradées"
    },
    {
-    "fichier": "photos/r4.jpg",
+    "fichier": "photos/r4.webp",
     "legende": "Nude délicat"
    },
    {
-    "fichier": "photos/r5.jpg",
+    "fichier": "photos/r5.webp",
     "legende": "French classique"
    },
    {
-    "fichier": "photos/r6.jpg",
+    "fichier": "photos/r6.webp",
     "legende": "Nude pour un mariage"
    },
    {
-    "fichier": "photos/r7.jpg",
+    "fichier": "photos/r7.webp",
     "legende": "Amande lilas"
    },
    {
-    "fichier": "photos/r8.jpg",
+    "fichier": "photos/r8.webp",
     "legende": "Pose en cours au studio"
    }
   ]

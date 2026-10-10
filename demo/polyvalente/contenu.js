@@ -223,7 +223,7 @@ window.PRO = {
    ],
    "tenue": "3 à 4 semaines",
    "conseils": "Remplissage conseillé toutes les 3 à 4 semaines.",
-   "photo": "photos/r6.jpg",
+   "photo": "photos/r6.webp",
    "longueur": true
   },
   {
@@ -256,7 +256,7 @@ window.PRO = {
    ],
    "tenue": "3 semaines",
    "conseils": "Idéal pour des ongles courts qui cassent.",
-   "photo": "photos/r5.jpg"
+   "photo": "photos/r5.webp"
   },
   {
    "id": "semi-mains",
@@ -273,7 +273,7 @@ window.PRO = {
    ],
    "tenue": "2 à 3 semaines",
    "conseils": "Portez des gants pour le ménage.",
-   "photo": "photos/r8.jpg"
+   "photo": "photos/r8.webp"
   },
   {
    "id": "russe-semi",
@@ -289,7 +289,7 @@ window.PRO = {
    ],
    "tenue": "3 semaines",
    "conseils": "Le rendu reste net plus longtemps à la repousse.",
-   "photo": "photos/r10.jpg"
+   "photo": "photos/r10.webp"
   },
   {
    "id": "russe-seule",
@@ -319,7 +319,7 @@ window.PRO = {
    ],
    "tenue": "Comme la pose",
    "conseils": "Envoyez votre idée à la réservation.",
-   "photo": "photos/r7.jpg"
+   "photo": "photos/r7.webp"
   },
   {
    "id": "nailart-avance",
@@ -335,7 +335,7 @@ window.PRO = {
    ],
    "tenue": "Comme la pose",
    "conseils": "Joignez une photo d'inspiration, on l'adapte ensemble.",
-   "photo": "photos/r4.jpg"
+   "photo": "photos/r4.webp"
   },
   {
    "id": "french",
@@ -350,7 +350,7 @@ window.PRO = {
    ],
    "tenue": "Comme la pose",
    "conseils": "Aussi en version colorée ou fine « micro French ».",
-   "photo": "photos/r1.jpg"
+   "photo": "photos/r1.webp"
   },
   {
    "id": "baby-boomer",
@@ -365,7 +365,7 @@ window.PRO = {
    ],
    "tenue": "Comme la pose",
    "conseils": "Laisse moins voir la repousse qu'une couleur unie.",
-   "photo": "photos/r2.jpg"
+   "photo": "photos/r2.webp"
   },
   {
    "id": "chrome",
@@ -381,7 +381,7 @@ window.PRO = {
    ],
    "tenue": "Comme la pose",
    "conseils": "Superbe sur du nude ou du noir.",
-   "photo": "photos/r3.jpg"
+   "photo": "photos/r3.webp"
   },
   {
    "id": "semi-pieds",
@@ -397,7 +397,7 @@ window.PRO = {
    ],
    "tenue": "4 à 6 semaines",
    "conseils": "Prévoyez des chaussures ouvertes.",
-   "photo": "photos/r9.jpg"
+   "photo": "photos/r9.webp"
   },
   {
    "id": "beaute-pieds",
@@ -639,47 +639,47 @@ window.PRO = {
   }
  ],
  "photos": {
-  "profil": "photos/profil.jpg",
-  "banniere": "photos/banniere.jpg",
+  "profil": "photos/profil.webp",
+  "banniere": "photos/banniere.webp",
   "galerie": [
    {
-    "fichier": "photos/r1.jpg",
+    "fichier": "photos/r1.webp",
     "legende": "French sur ongles naturels"
    },
    {
-    "fichier": "photos/r2.jpg",
+    "fichier": "photos/r2.webp",
     "legende": "Baby boomer"
    },
    {
-    "fichier": "photos/r3.jpg",
+    "fichier": "photos/r3.webp",
     "legende": "Effet nacré"
    },
    {
-    "fichier": "photos/r4.jpg",
+    "fichier": "photos/r4.webp",
     "legende": "Nail art coloré"
    },
    {
-    "fichier": "photos/r5.jpg",
+    "fichier": "photos/r5.webp",
     "legende": "Nude sur ongles courts"
    },
    {
-    "fichier": "photos/r6.jpg",
+    "fichier": "photos/r6.webp",
     "legende": "French bleu électrique"
    },
    {
-    "fichier": "photos/r7.jpg",
+    "fichier": "photos/r7.webp",
     "legende": "Nail art bleu et or"
    },
    {
-    "fichier": "photos/r8.jpg",
+    "fichier": "photos/r8.webp",
     "legende": "Rouge classique"
    },
    {
-    "fichier": "photos/r9.jpg",
+    "fichier": "photos/r9.webp",
     "legende": "Semi pieds framboise"
    },
    {
-    "fichier": "photos/r10.jpg",
+    "fichier": "photos/r10.webp",
     "legende": "Pastels sur ongles courts"
    }
   ]

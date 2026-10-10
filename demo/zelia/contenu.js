@@ -73,7 +73,7 @@ window.PRO = {
    ],
    "tenue": "3 à 4 semaines",
    "conseils": "Remplissage conseillé toutes les 3 semaines. Évitez d'utiliser vos ongles comme outils.",
-   "photo": "photos/r5.jpg",
+   "photo": "photos/r5.webp",
    "longueur": true
   },
   {
@@ -107,7 +107,7 @@ window.PRO = {
    ],
    "tenue": "3 semaines",
    "conseils": "Parfait si vous voulez du style sans longueur.",
-   "photo": "photos/r6.jpg"
+   "photo": "photos/r6.webp"
   },
   {
    "id": "french-couleur",
@@ -124,7 +124,7 @@ window.PRO = {
    ],
    "tenue": "3 à 4 semaines",
    "conseils": "Envoyez votre inspi à la réservation.",
-   "photo": "photos/r1.jpg",
+   "photo": "photos/r1.webp",
    "longueur": true
   },
   {
@@ -141,7 +141,7 @@ window.PRO = {
    ],
    "tenue": "Comme la pose",
    "conseils": "Rendu plus fort sur une base foncée.",
-   "photo": "photos/r3.jpg"
+   "photo": "photos/r3.webp"
   },
   {
    "id": "nailart-full",
@@ -158,7 +158,7 @@ window.PRO = {
    ],
    "tenue": "Comme la pose",
    "conseils": "Le prix final est confirmé avant le RDV si l'inspi est très chargée.",
-   "photo": "photos/r7.jpg"
+   "photo": "photos/r7.webp"
   },
   {
    "id": "strass",
@@ -176,7 +176,7 @@ window.PRO = {
    ],
    "tenue": "2 à 3 semaines",
    "conseils": "Les charms 3D sont plus sympas sur 2-3 ongles.",
-   "photo": "photos/r5.jpg"
+   "photo": "photos/r5.webp"
   },
   {
    "id": "pieds-neon",
@@ -393,43 +393,43 @@ window.PRO = {
   }
  ],
  "photos": {
-  "profil": "photos/profil.jpg",
-  "banniere": "photos/banniere.jpg",
+  "profil": "photos/profil.webp",
+  "banniere": "photos/banniere.webp",
   "galerie": [
    {
-    "fichier": "photos/r1.jpg",
+    "fichier": "photos/r1.webp",
     "legende": "Néon et dessin à main levée"
    },
    {
-    "fichier": "photos/r2.jpg",
+    "fichier": "photos/r2.webp",
     "legende": "Stiletto rose chrome"
    },
    {
-    "fichier": "photos/r3.jpg",
+    "fichier": "photos/r3.webp",
     "legende": "Stiletto chrome sculpté"
    },
    {
-    "fichier": "photos/r4.jpg",
+    "fichier": "photos/r4.webp",
     "legende": "Stiletto noir graphique"
    },
    {
-    "fichier": "photos/r5.jpg",
+    "fichier": "photos/r5.webp",
     "legende": "Capsules XL et charms 3D"
    },
    {
-    "fichier": "photos/r6.jpg",
+    "fichier": "photos/r6.webp",
     "legende": "Court noir et rouge"
    },
    {
-    "fichier": "photos/r7.jpg",
+    "fichier": "photos/r7.webp",
     "legende": "Long nail art multicolore"
    },
    {
-    "fichier": "photos/r8.jpg",
+    "fichier": "photos/r8.webp",
     "legende": "Abstrait arc-en-ciel"
    },
    {
-    "fichier": "photos/r9.jpg",
+    "fichier": "photos/r9.webp",
     "legende": "Vert néon brillant"
    }
   ]

@@ -1,6 +1,6 @@
 // Réglages de la page de Maëlle : thème 2 « motifs manucure » (validé) et agenda. Le contenu est dans contenu.js.
 window.PRO.reglages = {
-  avatar: 'avatar.svg',                       // main dessinée validée (en-tête A) au lieu de photos/profil.jpg
+  avatar: 'avatar.svg',                       // main dessinée validée (en-tête A) au lieu de photos/profil.webp
   theme: {
     vars: {
       'police-titre': '"DM Serif Display",Georgia,serif', 'police-texte': 'Inter,system-ui,sans-serif',
