@@ -23,7 +23,7 @@
 <style>
 :root{--sauge:#4d6b57;--sauge-fonce:#3d5746;--sauge-clair:#dfe8dc;--creme:#fbf6ee;--terra-fonce:#a65f3f;--rose:#e8a596;--texte:#2f3a33;--doux:#5f6a63;--ligne:#e6dfd3}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
 body{margin:0;background:var(--creme);color:var(--texte);font:17px/1.55 Inter,system-ui,sans-serif}
 a{color:var(--sauge)}
 a:focus-visible,summary:focus-visible{outline:3px solid var(--terra-fonce);outline-offset:3px;border-radius:6px}
@@ -100,7 +100,10 @@ footer a{color:var(--sauge)}
   .galerie{grid-template-columns:repeat(2,1fr)}
   .points{grid-template-columns:repeat(2,1fr)}
   .etapes{grid-template-columns:1fr}
-  .menu nav{display:none}
+  /* téléphone : liens du menu sur une 2e ligne */
+  html{scroll-padding-top:104px}
+  .menu .large{flex-wrap:wrap;height:auto;padding-top:8px;padding-bottom:6px;row-gap:2px}
+  .menu nav{order:3;width:100%;justify-content:space-between;gap:12px;overflow-x:auto;padding:4px 0}
 }
 @media (max-width:540px){
   h1{font-size:2.05rem}
