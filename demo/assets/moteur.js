@@ -456,7 +456,8 @@ $('confirmer').onclick = () => {
 const ERREURS = {pris: 'Ce créneau vient d’être pris. Choisissez-en un autre.', trop: 'Vous avez déjà le nombre maximum de rendez-vous à venir ici.',
   refuse: `La réservation en ligne n’est pas possible. Contactez directement ${prenomPro}.`, robot: 'La vérification anti-robot n’a pas abouti. Réessayez dans un instant.',
   invalide: 'Une information semble incorrecte. Vérifiez vos choix et vos coordonnées.', indisponible: 'Cette page n’accepte pas de réservation pour le moment.',
-  page_modifiee: 'Cette page vient d’être mise à jour. Elle se recharge : refaites votre choix.'};
+  page_modifiee: 'Cette page vient d’être mise à jour. Elle se recharge : refaites votre choix.',
+  sature: `Beaucoup de demandes sont arrivées en peu de temps. Réessayez un peu plus tard, ou contactez directement ${prenomPro}.`};
 async function envoyer() {
   const s = etat(), d = jours[s.jour].date, b = $('confirmer');
   b.disabled = true; b.textContent = 'Envoi…'; $('erreurRecap').hidden = true;
