@@ -65,19 +65,33 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
 const PAIRES = [['texte', 'carte'], ['texte', 'fond-uni'], ['doux', 'carte'], ['doux', 'fond-uni'], ['titre', 'fond-uni'],
   ['accent-texte', 'accent'], ['creneau-texte', 'creneau'], ['texte', 'accent-fond'], ['accent', 'carte'], ['texte', 'info']];
 const meilleur = (fond, ...c) => c.reduce((m, x) => ratio(x, fond) > ratio(m, fond) ? x : m);
+// Fondu de la photo de fond (3 crans) : voile de la couleur (alpha hex) et hauteur de la photo avant de s'effacer (% de l'écran).
+// Avec un fondu, cartes à 85 % : la photo se voit derrière les textes (Renzo 15/10, solution A) ; 85 % = le plus transparent
+// qui garde 4,5:1 au pire sur les 3 crans (essai : fonds rose, nuit, sauge, blanc cassé, blanc).
+const FONDUS = {leger: {voile: '26', haut: 120}, moyen: {voile: '4d', haut: 95}, fort: {voile: '73', haut: 70}};
 function couleursVars(c) {
   if (!c || !HEX.test(c.principale) || !HEX.test(c.fond)) return null;
   const f = c.fond, a = c.principale, texte = meilleur(f, '#111111', '#ffffff'), clair = texte === '#111111';
   const carte = clair ? '#ffffff' : melange(f, '#000000', .25);
-  let doux = texte;   // le plus proche du fond qui reste lisible sur la carte et le fond
-  for (let t = .05; t <= .6; t += .05) { const d = melange(texte, f, t); if (ratio(d, carte) < 4.5 || ratio(d, f) < 4.5) break; doux = d; }
+  // Photo de fond : la carte (opacité op %) laisse passer le reste de la photo, comptée toute noire (texte foncé) ou toute blanche,
+  // sous le voile de la couleur s'il y a un fondu = contraste au pire.
+  const photo = typeof c.fond_photo === 'string' && /^[\w\-./:%]+$/.test(c.fond_photo), F = Object.hasOwn(FONDUS, c.fondu) ? FONDUS[c.fondu] : null, op = F ? 85 : 94;
+  const noir = clair ? '#000000' : '#ffffff', px = F ? melange(noir, f, parseInt(F.voile, 16) / 255) : noir;
+  const pire = photo ? melange(carte, px, 1 - op / 100) : carte;
+  let doux = texte;   // le plus proche du fond qui reste lisible sur la carte (au pire) et le fond
+  for (let t = .05; t <= .6; t += .05) { const d = melange(texte, f, t); if (ratio(d, pire) < 4.5 || ratio(d, f) < 4.5) break; doux = d; }
   const vars = {fond: f, 'fond-uni': f, texte, titre: texte, doux, carte, champ: carte, bord: melange(carte, texte, .18),
     info: melange(carte, a, .1), accent: a, 'accent-texte': meilleur(a, '#ffffff', '#111111'), 'accent-fond': melange(carte, a, .12),
     creneau: a, 'creneau-texte': meilleur(a, '#ffffff', '#111111'), entete: `linear-gradient(135deg,${melange(f, a, .25)},${f})`};
-  // ponytail: photo de fond = blocs sur cartes à 94 % ; contraste calculé sur la carte seule, pas sur la photo vue au travers
-  const css = typeof c.fond_photo === 'string' && /^[\w\-./:%]+$/.test(c.fond_photo)
-    ? `body{background:${f} url("${c.fond_photo}") center/cover fixed}header,main{background:color-mix(in srgb,var(--carte) 94%,transparent)}main{border-radius:var(--rayon);padding-block:8px}` : '';
-  return {vars, css};
+  // Photo de fond = blocs sur cartes à op %. Avec un « fondu » (Renzo 15/10) : la couleur est le fond de la page, la photo
+  // se pose en haut sous un voile de la couleur et s'efface vers elle sur les côtés et en bas. Sans fondu : rendu d'avant (94 %).
+  // Boutons secondaires (transparents) posés sur la carte pleine : la photo ne passe jamais sous le texte d'un bouton.
+  const cartes = `header,main{background:color-mix(in srgb,var(--carte) ${op}%,transparent)}main{border-radius:var(--rayon);padding-block:8px}.btn.sec{background:var(--carte)}`;
+  const css = !photo ? '' : !F ? `body{background:${f} url("${c.fond_photo}") center/cover fixed}` + cartes
+    : `html{background:${f}}body{background:transparent}body::before{content:"";position:fixed;inset:0;z-index:-1;`
+      + `background:linear-gradient(${f}${F.voile},${f}${F.voile}),url("${c.fond_photo}") center top/cover;`
+      + `--m:radial-gradient(ellipse 95% ${F.haut}% at 50% 0,#000 55%,transparent);-webkit-mask-image:var(--m);mask-image:var(--m)}` + cartes;
+  return {vars, css, controle: {...vars, carte: pire, champ: pire}};
 }
 const illisibles = v => PAIRES.filter(([x, y]) => ratio(v[x], v[y]) < 4.5);
 // « Corriger pour moi » : la teinte la plus proche qui passe (fond, puis couleur principale, éclaircis ou assombris).
@@ -88,7 +102,7 @@ function corriger(c) {
     }
     r[cle] = c[cle];
   };
-  const ok = () => !illisibles(couleursVars(r).vars).length;
+  const ok = () => !illisibles(couleursVars(r).controle).length;   // contraste au pire (photo de fond comprise)
   if (!ok()) pousse('fond', () => ratio(couleursVars(r).vars.texte, r.fond) >= 4.5);
   if (!ok()) pousse('principale', ok);
   return r;
