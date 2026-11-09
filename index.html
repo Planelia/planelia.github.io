@@ -126,6 +126,165 @@ footer a{color:var(--sauge)}
   .actions .btn{flex:1 1 100%}
   .telephone{width:240px}
 }
+
+/* ===== Design 2026 (brouillon 09/11) : une seule page fluide, sans tranches ===== */
+:root{--rayon:24px;--ombre:0 1px 2px rgba(47,58,51,.04),0 12px 32px -12px rgba(47,58,51,.14);--ombre-forte:0 2px 4px rgba(47,58,51,.05),0 24px 48px -16px rgba(47,58,51,.22);--verre:rgba(251,246,238,.72)}
+body{background:
+  radial-gradient(1100px 620px at 85% -6%,rgba(223,232,220,.95),transparent 62%),
+  radial-gradient(900px 560px at -12% 18%,rgba(245,218,207,.55),transparent 60%),
+  radial-gradient(1000px 700px at 110% 58%,rgba(223,232,220,.7),transparent 60%),
+  radial-gradient(900px 600px at -10% 92%,rgba(245,218,207,.45),transparent 60%),
+  var(--creme);background-attachment:scroll;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+section,.haut{background:none!important;border:0!important}
+section{padding:clamp(48px,7vw,88px) 0}
+.offre h2{text-align:left;margin-left:0}
+#faq h2{margin-bottom:28px}
+#comment h2{margin-bottom:32px}
+.large{max-width:1120px;padding:0 24px}
+/* menu en verre */
+.menu{background:var(--verre);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid transparent;transition:box-shadow .3s,border-color .3s}
+.menu.defile{border-bottom-color:rgba(230,223,211,.8);box-shadow:0 6px 24px -14px rgba(47,58,51,.3)}
+.menu nav a{position:relative;padding:4px 0}
+.menu nav a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;border-radius:2px;background:var(--sauge);transform:scaleX(0);transition:transform .25s}
+.menu nav a:hover::after{transform:scaleX(1)}
+/* boutons doux */
+.btn{border-radius:999px;padding:15px 28px;transition:transform .2s,box-shadow .2s,background .2s;box-shadow:0 8px 20px -10px rgba(166,95,63,.6)}
+.btn:hover{transform:translateY(-2px)}
+.btn.vert{box-shadow:0 10px 24px -10px rgba(46,125,91,.65)}
+.btn.vert:hover{box-shadow:0 14px 30px -10px rgba(46,125,91,.7)}
+.btn.second{background:rgba(255,255,255,.7);border:1px solid rgba(77,107,87,.35);box-shadow:none}
+.respire{animation:none!important}
+/* haut de page */
+.haut{padding:clamp(40px,7vw,88px) 0 clamp(24px,4vw,48px)}
+h1{font-size:clamp(2.3rem,5.2vw,3.7rem);letter-spacing:-.02em}
+h2{font-size:clamp(1.9rem,3.6vw,2.7rem);letter-spacing:-.015em}
+.badge{display:inline-flex;align-items:center;gap:10px;margin:0 0 22px;padding:8px 16px 8px 12px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid rgba(77,107,87,.18);box-shadow:var(--ombre);font-size:.88rem;font-weight:600;color:var(--sauge-fonce)}
+.pastille{width:8px;height:8px;border-radius:50%;background:#2e7d5b;box-shadow:0 0 0 4px rgba(46,125,91,.15)}
+@media (prefers-reduced-motion:no-preference){.pastille{animation:pouls 2.4s ease-in-out infinite}}
+@keyframes pouls{50%{box-shadow:0 0 0 7px rgba(46,125,91,.05)}}
+.haut p.sous{font-size:1.15rem;color:var(--doux);line-height:1.6}
+.haut p.petit{font-size:.92rem;color:var(--doux);margin:14px 0 0;max-width:34em}
+.haut p.petit strong{display:inline-block;color:var(--texte);background:rgba(255,255,255,.7);border:1px solid var(--ligne);border-radius:14px;padding:10px 14px;font-weight:600;line-height:1.45}
+.rassure{display:flex;flex-wrap:wrap;gap:8px}
+.rassure span{padding:6px 12px;border-radius:999px;background:rgba(223,232,220,.7);font-size:.85rem}
+.rassure span+span::before{content:none}
+.telephone{width:290px;border:9px solid #253029;border-radius:44px;box-shadow:var(--ombre-forte),0 40px 80px -30px rgba(77,107,87,.45);transform:rotate(2deg)}
+@media (prefers-reduced-motion:no-preference){.telephone{animation:flotte 7s ease-in-out infinite}}
+@keyframes flotte{50%{transform:rotate(2deg) translateY(-10px)}}
+/* titres de section centrés */
+section h2,section .chapeau{text-align:center;margin-left:auto;margin-right:auto}
+.chapeau{font-size:1.08rem;margin-bottom:44px}
+/* cartes */
+.point,.etapes li,.carte-demo,details,.tarif{background:rgba(255,255,255,.78);border:1px solid rgba(230,223,211,.7);border-radius:var(--rayon);box-shadow:var(--ombre)}
+.points{gap:18px}
+.point{padding:26px 24px;transition:transform .25s,box-shadow .25s}
+.point:hover,.carte-demo:hover{transform:translateY(-4px);box-shadow:var(--ombre-forte)}
+.point svg{width:46px;height:46px;padding:11px;border-radius:14px;background:var(--sauge-clair)}
+.point b{font-size:1.05rem;margin-top:14px}
+.carte-demo{transition:transform .25s,box-shadow .25s}
+.carte-demo .ecran{border:0}
+.etapes{gap:20px;position:relative}
+.etapes li{padding:30px 26px}
+.etapes li::before{width:44px;height:44px;background:linear-gradient(135deg,#4d6b57,#2e7d5b);box-shadow:0 8px 18px -8px rgba(46,125,91,.7)}
+/* offre */
+.offre{align-items:center;gap:48px}
+.tarif{padding:34px 30px;box-shadow:var(--ombre-forte);position:relative}
+.tarif::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(46,125,91,.55),rgba(232,165,150,.55));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.tarif li{border-top-color:rgba(230,223,211,.7)}
+/* FAQ */
+.faq{margin:0 auto}
+details{padding:0 22px;margin-bottom:12px;transition:box-shadow .25s}
+details[open]{box-shadow:var(--ombre-forte)}
+summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--sauge-clair);color:var(--sauge-fonce);font-weight:400;font-size:1.2rem;transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+footer{border-top:0}
+/* apparition douce au défilement (sans JS : tout reste visible) */
+@media (prefers-reduced-motion:no-preference){
+  .js .apparait{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .js .apparait.vu{opacity:1;transform:none}
+}
+@media (max-width:540px){.telephone{width:250px}.badge{font-size:.8rem}.points{gap:12px}.point{display:grid;grid-template-columns:46px 1fr;column-gap:14px;padding:18px 18px}.point svg{grid-row:span 2}.point b{margin:2px 0 4px}}
+
+/* ===== v2 (09/11 soir) : plus de cadres sous le haut de page ===== */
+/* atouts : titre fixe à gauche, liste aérée à droite */
+#fonctionnalites .large{display:grid;grid-template-columns:.9fr 1.3fr;gap:64px;align-items:start}
+#fonctionnalites .colle{position:sticky;top:120px}
+#fonctionnalites .colle h2,#fonctionnalites .colle .chapeau{text-align:left;margin-left:0}
+.points{display:block}
+.point{display:grid;grid-template-columns:52px 1fr;column-gap:20px;background:none!important;border:0!important;box-shadow:none!important;border-radius:0;padding:26px 0;border-top:1px solid rgba(77,107,87,.14)!important}
+.point:first-child{border-top:0!important;padding-top:4px}
+.point:hover{transform:none}
+.point svg{grid-row:span 2;width:52px;height:52px;padding:13px;border-radius:16px;background:linear-gradient(135deg,rgba(223,232,220,1),rgba(245,218,207,.7))}
+.point b{margin:4px 0 6px;font-size:1.12rem;color:var(--sauge-fonce)}
+.point p{font-size:1rem;line-height:1.6}
+/* comment ça marche : ligne de temps */
+#comment .large{max-width:760px}
+.etapes{display:block;position:relative;padding-left:0}
+.etapes::before{content:"";position:absolute;left:22px;top:22px;bottom:40px;width:2px;background:linear-gradient(#4d6b57,rgba(77,107,87,.12))}
+.etapes li{position:relative;background:none!important;border:0!important;box-shadow:none!important;padding:0 0 40px 74px}
+.etapes li::before{position:absolute;left:0;top:0;margin:0}
+.etapes h3{font-size:1.4rem;padding-top:8px}
+.etapes p{font-size:1.02rem}
+/* FAQ : de simples lignes */
+details{background:none!important;border:0!important;box-shadow:none!important;border-radius:0;padding:0;margin:0;border-bottom:1px solid rgba(77,107,87,.16)!important}
+details:first-of-type{border-top:1px solid rgba(77,107,87,.16)!important}
+summary{padding:22px 0;font-size:1.05rem}
+details p{padding-right:44px}
+/* démos : cartes plus légères */
+.carte-demo{border:0!important}
+@media (max-width:860px){
+  #fonctionnalites .large{grid-template-columns:1fr;gap:20px}
+  #fonctionnalites .colle{position:static}
+  #fonctionnalites .colle h2,#fonctionnalites .colle .chapeau{text-align:center;margin-left:auto}
+  /* démos : carrousel au doigt */
+  .galerie{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 -24px;padding:6px 24px 18px;scrollbar-width:none}
+  .galerie::-webkit-scrollbar{display:none}
+  .carte-demo{flex:0 0 72%;scroll-snap-align:center}
+}
+@media (max-width:540px){
+  .point{grid-template-columns:44px 1fr;column-gap:14px;padding:20px 0}
+  .point svg{width:44px;height:44px;padding:11px}
+  .etapes li{padding-left:64px}
+}
+
+/* ===== v3 : vitrine lumineuse à gauche, synchronisée avec la liste ===== */
+.vitrine{display:none}
+@media (min-width:861px){
+  .js .vitrine{display:block;position:relative;margin-top:28px;min-height:300px;padding:34px 32px;border-radius:28px;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9);box-shadow:var(--ombre-forte);overflow:hidden;isolation:isolate}
+  .vitrine .halo{position:absolute;z-index:-1;width:340px;height:340px;left:-80px;top:-110px;border-radius:50%;background:radial-gradient(circle,rgba(46,125,91,.32),rgba(232,165,150,.22) 45%,transparent 70%);filter:blur(10px);transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+  .vitrine .contenu{transition:opacity .35s,transform .35s}
+  .vitrine.change .contenu{opacity:0;transform:translateY(10px)}
+  .vitrine .num{display:block;font-size:.8rem;font-weight:600;letter-spacing:.12em;color:var(--sauge);margin-bottom:18px}
+  .vitrine .ico svg{width:72px;height:72px;padding:18px;border-radius:22px;background:#fff;stroke:#2e7d5b;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;box-shadow:0 0 0 6px rgba(46,125,91,.08),0 12px 30px -8px rgba(46,125,91,.55)}
+  .vitrine b{display:block;font:400 1.75rem/1.2 "DM Serif Display",Georgia,serif;color:var(--sauge-fonce);margin:22px 0 10px}
+  .vitrine p{margin:0;font-size:1.08rem;line-height:1.65;color:var(--texte)}
+  /* liste : le point lu s'allume, les autres s'effacent */
+  .js .point{opacity:.38;transition:opacity .4s,transform .4s}
+  .js .point.actif{opacity:1;transform:translateX(6px)}
+}
+.point svg{transition:box-shadow .4s,background .4s}
+.js .point.actif svg{background:#fff;stroke:#2e7d5b;box-shadow:0 0 0 5px rgba(46,125,91,.1),0 8px 22px -6px rgba(46,125,91,.6)}
+@media (max-width:860px){.js .point{transition:opacity .4s}.js .point:not(.actif){opacity:.55}}
+@media (prefers-reduced-motion:reduce){.vitrine .contenu,.vitrine .halo,.js .point{transition:none}}
+@media (min-width:861px){.js .point.apparait.vu:not(.actif){opacity:.38}.js .point.apparait.vu.actif{transform:translateX(6px)}}
+@media (max-width:860px){.js .point.apparait.vu:not(.actif){opacity:.55}}
+/* ===== v4 « nuage » (09/11 soir) : tout glisse en douceur ===== */
+:root{--doux:cubic-bezier(.22,1,.36,1)}
+@media (prefers-reduced-motion:no-preference){
+  .js .apparait{filter:blur(6px);transition:opacity 1.1s var(--doux),transform 1.1s var(--doux),filter 1.1s var(--doux)}
+  .js .apparait.vu{filter:none}
+  .btn{transition:transform .6s var(--doux),box-shadow .6s var(--doux),background .4s}
+  .btn:hover{transform:translateY(-3px);box-shadow:0 18px 34px -14px rgba(166,95,63,.55)}
+  .carte-demo{transition:transform .7s var(--doux),box-shadow .7s var(--doux)}
+  .menu nav a::after{transition:transform .5s var(--doux)}
+}
+.faq .corps{overflow:hidden}
+summary{border-radius:12px;transition:color .4s var(--doux),padding .5s var(--doux)}
+@media (hover:hover){summary:hover{color:var(--sauge-fonce);padding-left:6px}}
+summary::after{transition:transform .6s var(--doux),background .4s}
+details[open] summary::after{background:var(--sauge);color:#fff}
 </style>
 </head>
 <body>
@@ -140,7 +299,7 @@ footer a{color:var(--sauge)}
 <div class="haut">
   <div class="large">
     <div>
-      <div class="nelia mot"><p>Bonjour, moi c’est Renzo. Je monte votre page moi-même, et vous la validez avant sa mise en ligne. <a href="#comment">Comment ça marche</a>&nbsp;?</p></div>
+      <p class="badge"><span class="pastille" aria-hidden="true"></span>Programme pionnières · 10 places · Votre page montée pour vous</p>
       <h1>Votre clientèle réserve en ligne, <span class="accent">chez vous ou à domicile</span></h1>
       <p class="sous">Pour les pros des ongles et de l’esthétique à leur compte, chez elles ou à domicile. Votre clientèle choisit la prestation, le lieu et l’horaire, et vous recevez chaque rendez-vous par e-mail. Si vous recevez chez vous, votre adresse reste privée jusqu’au rendez-vous confirmé.</p>
       <p class="petit"><strong>10 places, gratuit jusqu’au 31 mars 2027, puis 19&nbsp;€/mois sans engagement. Aucune carte bancaire demandée.</strong></p>
@@ -162,8 +321,9 @@ footer a{color:var(--sauge)}
 <main>
   <section id="fonctionnalites">
     <div class="large">
-      <h2>Pensé pour votre façon de travailler</h2>
+      <div class="colle"><h2>Pensé pour votre façon de travailler</h2>
       <p class="chapeau">Seulement ce qui fonctionne déjà, sans promesse en l’air.</p>
+      <div class="vitrine" aria-hidden="true"><div class="halo"></div><div class="contenu"><span class="num">01 / 09</span><div class="ico"></div><b></b><p></p></div></div></div>
       <div class="points">
         <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><b>Pensé pour le domicile</b><p>Vos secteurs, vos frais de déplacement et le temps de trajet entre deux rendez-vous sont pris en compte automatiquement.</p></div>
         <div class="point"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><b>Votre adresse reste privée</b><p>Si vous recevez chez vous, seul votre quartier est affiché. L’adresse exacte n’est donnée qu’une fois le rendez-vous confirmé.</p></div>
@@ -254,5 +414,6 @@ footer a{color:var(--sauge)}
 </footer>
 <script defer src="assets/nelia-dessins.js"></script><script defer src="assets/nelia.js"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "97c04b8fa79a458eb1ad6857334ec16c"}'></script>
+<script src="assets/design.js"></script>
 </body>
 </html>
