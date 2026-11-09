@@ -302,7 +302,8 @@ ${S.reservation?.titre ? `<h2>${esc(S.reservation.titre)}</h2>` : ''}
   ${REEL ? '' : `<p class="muted">Démonstration : aucun message n’a été envoyé et aucune donnée n’a été enregistrée. Dans la vraie version, un e-mail de confirmation vous serait envoyé.</p>
   <button class="btn sec" id="recommencer">Recommencer la démo</button>`}
 </section>`,
-  avis: () => `
+  avis: () => '', // 09/11 (Renzo) : plus d’avis d’exemple sur les démos, de faux avis font douter du reste
+  avis_ancien: () => `
   ${P.avis?.length && !REEL ? `<h2>${titre('avis', 'Avis')} <span class="prevu">avis d’exemple</span></h2>
   <div class="avis">${P.avis.map(a => `<figure><span class="etoiles" aria-label="${a.note} sur 5">${'★'.repeat(a.note)}${'☆'.repeat(5 - a.note)}</span>
     <blockquote>${esc(a.texte)}</blockquote><figcaption>${esc(a.prenom)} · ${esc(a.prestation)}</figcaption></figure>`).join('')}</div>` : ''}`,

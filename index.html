@@ -62,6 +62,7 @@ section{padding:56px 0}
 .nelia p{position:relative;z-index:0;margin:0;padding:10px 16px;background:linear-gradient(#fffbf5,#f5dacf);color:#24322a;border:2.5px solid #4d6b57;border-radius:26px 34px 30px 20px/22px 28px 34px 26px;font-size:.95rem;line-height:1.4;transform-origin:left center;animation:nelia-pop .2s ease-out}
 .nelia p::before{content:"";position:absolute;left:-11px;top:50%;margin-top:-10px;width:18px;height:18px;border:solid #4d6b57;border-width:0 0 2.5px 2.5px;border-radius:0 0 0 6px;background:#fbebe2;transform:rotate(45deg)}
 .nelia a{color:#3d5746}
+.nelia.mot p::before{display:none} /* 09/11 : mot de Renzo, sans pointe de bulle */
 @keyframes nelia-pop{from{opacity:0;transform:scale(.9)}}@media (prefers-reduced-motion:reduce){.nelia p{animation:none}}
 .telephone{justify-self:center;width:270px;border:10px solid var(--texte);border-radius:38px;overflow:hidden;background:#fff;box-shadow:0 18px 40px rgba(47,58,51,.22)}
 .telephone img{display:block;width:100%;height:auto}
@@ -132,20 +133,21 @@ footer a{color:var(--sauge)}
   <div class="large">
     <a class="marque" href="https://planelia.fr/"><img src="logo.png" alt="" width="36" height="36">Planélia</a>
     <nav aria-label="Menu principal"><a href="#fonctionnalites">Fonctionnalités</a><a href="#demos">Démos</a><a href="#tarif">Tarif</a><a href="#faq">FAQ</a></nav>
-    <a class="btn" href="https://rdv.planelia.fr/pro/?creer" rel="noopener">Tester</a>
+    <a class="btn" href="mailto:contact@planelia.fr?subject=Je%20veux%20une%20place%20sur%20Plan%C3%A9lia&amp;body=Bonjour%20Renzo%2C%0A%0AMes%20prestations%20et%20mes%20prix%20%3A%0A%0AMa%20ville%20et%20mes%20secteurs%20%3A%0A%0AMon%20Instagram%20(lien)%20%3A%0A%0AMerci%20!">Je veux une place</a>
   </div>
 </header>
 
 <div class="haut">
   <div class="large">
     <div>
-      <div class="nelia"><span class="nelia-anim" data-humeur="contente" data-geste="coucou"></span><p>Bonjour, je suis Nélia, la mascotte de Planélia : je vous montre <a href="#comment">comment ça marche</a>&nbsp;?</p></div>
-      <h1>Votre clientèle réserve en ligne, sur une page <span class="accent">à votre image</span></h1>
-      <p class="sous">Pour les pros des ongles et de l’esthétique à leur compte, chez elles ou à domicile. Votre clientèle choisit la prestation, le lieu et l’horaire, et vous recevez chaque rendez-vous par e-mail.</p>
+      <div class="nelia mot"><p>Bonjour, moi c’est Renzo. Je monte votre page moi-même, et vous la validez avant sa mise en ligne. <a href="#comment">Comment ça marche</a>&nbsp;?</p></div>
+      <h1>Votre clientèle réserve en ligne, <span class="accent">chez vous ou à domicile</span></h1>
+      <p class="sous">Pour les pros des ongles et de l’esthétique à leur compte, chez elles ou à domicile. Votre clientèle choisit la prestation, le lieu et l’horaire, et vous recevez chaque rendez-vous par e-mail. Si vous recevez chez vous, votre adresse reste privée jusqu’au rendez-vous confirmé.</p>
       <div class="actions">
-        <a class="btn vert respire" href="https://rdv.planelia.fr/pro/?creer" rel="noopener">Tester gratuitement</a>
+        <a class="btn vert respire" href="mailto:contact@planelia.fr?subject=Je%20veux%20une%20place%20sur%20Plan%C3%A9lia&amp;body=Bonjour%20Renzo%2C%0A%0AMes%20prestations%20et%20mes%20prix%20%3A%0A%0AMa%20ville%20et%20mes%20secteurs%20%3A%0A%0AMon%20Instagram%20(lien)%20%3A%0A%0AMerci%20!">Je veux une place</a>
         <a class="btn second" href="demo/index.html">Voir une démo</a>
       </div>
+      <p class="petit">Vous préférez la créer vous-même&nbsp;? <a href="https://rdv.planelia.fr/pro/?creer" rel="noopener">C’est par ici</a>.</p>
       <p class="rassure"><span>0 commission</span><span>gratuit pendant le test</span><span>données sauvegardées en Europe</span></p>
     </div>
     <div>
@@ -166,13 +168,13 @@ footer a{color:var(--sauge)}
         <a class="carte-demo" href="demo/zelia/index.html"><div class="ecran"><img src="assets/apercus/zelia.webp" width="480" height="1039" loading="lazy" alt="Page d’exemple Zélia Volt, style audacieux et nail art"></div><div class="txt"><b>Zélia Volt</b><span>Bold et nail art · Marseille</span></div></a>
         <a class="carte-demo" href="demo/polyvalente/index.html"><div class="ecran"><img src="assets/apercus/polyvalente.webp" width="480" height="1039" loading="lazy" alt="Page d’exemple Mille Teintes, cinq ambiances au choix"></div><div class="txt"><b>Mille Teintes</b><span>Cinq ambiances en un clic · Bordeaux</span></div></a>
       </div>
-      <p class="note">Pros, avis et adresses fictifs : ce sont des exemples de démonstration.</p>
+      <p class="note">Pros et adresses fictifs : ce sont des exemples de démonstration.</p>
     </div>
   </section>
 
   <section class="fond-blanc" id="comment">
     <div class="large">
-      <h2 class="titre-nelia"><span class="nelia-anim" data-humeur="contente" data-geste="montre"></span>Comment ça marche</h2>
+      <h2>Comment ça marche</h2>
       <ol class="etapes">
         <li><h3>On crée votre page pour vous</h3><p>Envoyez-nous vos prestations, vos prix, vos secteurs et quelques photos. On monte votre page, et vous la validez avant sa mise en ligne.</p></li>
         <li><h3>Vous partagez votre lien</h3><p>Sur Instagram, par message, sur votre carte de visite : votre clientèle réserve en 2&nbsp;minutes.</p></li>
@@ -209,7 +211,7 @@ footer a{color:var(--sauge)}
           <li>Gratuit pendant le test</li>
           <li>Vos retours orientent les prochaines fonctions</li>
         </ul>
-        <p class="note">Une question avant de vous lancer ? Écrivez-nous sur <a href="https://www.instagram.com/planelia.fr/" rel="noopener">Instagram</a> ou à <a href="mailto:contact@planelia.fr">contact@planelia.fr</a>.</p>
+        <p class="note">Places complètes&nbsp;? Écrivez-nous, on vous prévient. Une question avant de vous lancer ? Écrivez-nous sur <a href="https://www.instagram.com/planelia.fr/" rel="noopener">Instagram</a> ou à <a href="mailto:contact@planelia.fr">contact@planelia.fr</a>.</p>
       </div>
       <div class="tarif">
         <p class="gros" style="margin:0">0&nbsp;€ <small>pendant le test</small></p>
@@ -218,7 +220,7 @@ footer a{color:var(--sauge)}
           <li>0 commission sur vos rendez-vous</li>
         </ul>
         <span class="nelia-anim" data-humeur="contente" data-geste="joie"></span>
-        <a class="btn vert respire" href="https://rdv.planelia.fr/pro/?creer" rel="noopener">Je veux une place</a>
+        <a class="btn vert respire" href="mailto:contact@planelia.fr?subject=Je%20veux%20une%20place%20sur%20Plan%C3%A9lia&amp;body=Bonjour%20Renzo%2C%0A%0AMes%20prestations%20et%20mes%20prix%20%3A%0A%0AMa%20ville%20et%20mes%20secteurs%20%3A%0A%0AMon%20Instagram%20(lien)%20%3A%0A%0AMerci%20!">Je veux une place</a>
         <p class="petit">Gratuit pendant le test</p>
       </div>
     </div>
@@ -233,7 +235,7 @@ footer a{color:var(--sauge)}
       <details><summary>Y a-t-il un engagement&nbsp;?</summary><p>Non. Vous pouvez arrêter quand vous voulez en nous écrivant.</p></details>
       <details><summary>Et mes données, mon adresse&nbsp;?</summary><p>Si vous recevez chez vous, seul votre quartier est affiché : l’adresse exacte n’est donnée qu’une fois le rendez-vous confirmé. Les données sont sauvegardées chaque nuit, chiffrées, en Europe. Détails sur la page <a href="confidentialite.html">Confidentialité</a>.</p></details>
       <details><summary>Réserver, c’est compliqué pour mes clientes&nbsp;?</summary><p>Non. Elles réservent en quelques clics depuis leur téléphone ou leur ordinateur, sans compte ni mot de passe, et vous recevez les rendez-vous par e-mail et dans votre espace pro.</p></details>
-      <details><summary>Comment tester&nbsp;?</summary><p>Cliquez sur « Tester gratuitement », créez votre page et regardez l’aperçu. Si elle vous plaît, demandez sa mise en ligne : nous la vérifions, puis vous recevez un e-mail. Sinon, rien n’est publié et votre brouillon est effacé au bout de 7 jours. Vous pouvez aussi nous envoyer vos infos : on la monte pour vous.</p></details>
+      <details><summary>Comment tester&nbsp;?</summary><p>Cliquez sur « Je veux une place » et envoyez-nous vos prestations, vos prix, votre secteur et le lien de votre Instagram. On monte votre page, et vous la validez avant sa mise en ligne. Vous préférez la créer vous-même&nbsp;? Créez votre page et regardez l’aperçu : si elle vous plaît, demandez sa mise en ligne. Sinon, rien n’est publié et votre brouillon est effacé au bout de 7 jours.</p></details>
       <details><summary>Ma page peut-elle vraiment être personnalisée&nbsp;?</summary><p>Oui : couleurs, photos, textes, prestations avec leurs options, infos pratiques. Les <a href="demo/index.html">pages d’exemple</a> montrent des styles opposés, mais votre page est la vôtre : vous choisissez tout.</p></details>
     </div></div>
   </section>
