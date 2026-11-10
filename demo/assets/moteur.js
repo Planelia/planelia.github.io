@@ -485,7 +485,7 @@ async function envoyer() {
   b.disabled = false; b.textContent = 'Confirmer le rendez-vous';
   if (r.code !== 'ok') { $('erreurRecap').textContent = ERREURS[r.code] || 'Un problème est survenu. Réessayez dans un instant.'; $('erreurRecap').hidden = false; return; }
   $('finiTitre').textContent = `Plus qu’une étape, ${$('prenom').value.trim()} !`;
-  $('finiTexte').textContent = `Nous venons d’envoyer un e-mail à ${$('email').value.trim()}. Cliquez sur le lien qu’il contient dans les 30 minutes pour confirmer votre rendez-vous. Pensez à regarder dans les courriers indésirables.`;
+  $('finiTexte').textContent = `Nous venons d’envoyer un e-mail à ${$('email').value.trim()}. Cliquez sur le lien qu’il contient dans les 2 heures pour confirmer votre rendez-vous. Pensez à regarder dans les courriers indésirables.`;
   document.querySelector('#fini .coche').textContent = '✉';
   $('recap').hidden = true; $('fini').hidden = false; $('fini').scrollIntoView();
 }
