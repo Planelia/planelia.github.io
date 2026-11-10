@@ -162,7 +162,7 @@ h2{font-size:clamp(1.9rem,3.6vw,2.7rem);letter-spacing:-.015em}
 .pastille{width:8px;height:8px;border-radius:50%;background:#2e7d5b;box-shadow:0 0 0 4px rgba(46,125,91,.15)}
 @media (prefers-reduced-motion:no-preference){.pastille{animation:pouls 2.4s ease-in-out infinite}}
 @keyframes pouls{50%{box-shadow:0 0 0 7px rgba(46,125,91,.05)}}
-.haut p.sous{font-size:1.15rem;color:var(--doux);line-height:1.6}
+.haut p.sous{font-size:1.15rem;color:var(--texte);line-height:1.6}
 .haut p.petit{font-size:.92rem;color:var(--doux);margin:14px 0 0;max-width:34em}
 .haut p.petit strong{display:inline-block;color:var(--texte);background:rgba(255,255,255,.7);border:1px solid var(--ligne);border-radius:14px;padding:10px 14px;font-weight:600;line-height:1.45}
 .rassure{display:flex;flex-wrap:wrap;gap:8px}
@@ -321,6 +321,18 @@ details[open] summary::after{background:var(--sauge);color:#fff}
   @keyframes place-entre{from{transform:translateY(100%)}}
   @keyframes place-sort{to{transform:translateY(100%)}}}
 @media (prefers-reduced-motion:reduce){#place[open],#place.ferme,#place[open]::backdrop,#place.envoye .merci{animation:none}}
+#place .aide{display:block;margin:-8px 0 14px;font-weight:400;font-size:.88rem;color:#8a4a2f}
+#place .aide:empty{display:none}
+#place [aria-invalid=true]{border-color:#c98a6e}
+/* Zones de clic d'au moins 44 px au doigt (10/11) : marges invisibles, le dessin ne bouge pas */
+@media (max-width:860px){
+  .marque,.menu .btn{min-height:44px;box-sizing:border-box}
+  .menu .btn{display:inline-flex;align-items:center}
+  .menu nav a{display:inline-flex;align-items:center;min-height:44px;padding:0;margin:-4px 0}
+  .menu nav a::after{bottom:10px}   /* soulignement au même endroit sous le texte */
+  .haut p.petit a,footer a,#place .petit a{padding:14px 0}
+  #place .fermer{width:44px;height:44px}
+}
 </style>
 </head>
 <body>
@@ -337,15 +349,14 @@ details[open] summary::after{background:var(--sauge);color:#fff}
     <div>
       <p class="badge"><span class="pastille" aria-hidden="true"></span>Programme pionnières · 10 places · Votre page montée pour vous</p>
       <h1>Votre clientèle réserve en ligne, <span class="accent">chez vous ou à domicile</span></h1>
-      <p class="sous">Pour les pros des ongles et de l’esthétique à leur compte, chez elles ou à domicile. Votre clientèle choisit la prestation, le lieu et l’horaire, et vous recevez chaque rendez-vous par e-mail. Si vous recevez chez vous, votre adresse reste privée jusqu’au rendez-vous confirmé.</p>
+      <p class="sous">Prestation, lieu, horaire : elle choisit.<br>Le rendez-vous arrive par e‑mail.</p>
       <p class="petit"><strong>10 places, gratuit jusqu’au 31 mars 2027, puis 19&nbsp;€/mois sans engagement. Aucune carte bancaire demandée.</strong></p>
       <div class="actions">
         <a class="btn vert respire" href="mailto:contact@planelia.fr?subject=Je%20veux%20une%20place%20sur%20Plan%C3%A9lia&amp;body=Bonjour%20Renzo%2C%0A%0AMes%20prestations%20et%20mes%20prix%20%3A%0A%0AMa%20ville%20et%20mes%20secteurs%20%3A%0A%0AMon%20Instagram%20(lien)%20%3A%0A%0AMerci%20!">Je veux une place</a>
+        <a class="btn second" href="https://rdv.planelia.fr/pro/?creer" rel="noopener">Créer ma page moi-même</a>
         <a class="btn second" href="demo/index.html">Voir une démo</a>
       </div>
-      <p class="petit">Envoyez vos prestations, vos prix, votre secteur et votre Instagram. L’e-mail ne s’ouvre pas&nbsp;? Écrivez à <a href="mailto:contact@planelia.fr">contact@planelia.fr</a>.</p>
-      <p class="petit">Vous préférez la créer vous-même&nbsp;? <a href="https://rdv.planelia.fr/pro/?creer" rel="noopener">C’est par ici</a>.</p>
-      <p class="rassure"><span>0 commission</span><span>gratuit jusqu’au 31 mars 2027</span><span>données sauvegardées en Europe</span></p>
+      <p class="rassure"><span>0 commission</span><span>données sauvegardées en Europe</span></p>
     </div>
     <div>
       <div class="telephone"><img src="assets/apercus/lea.webp" width="480" height="1039" alt="Exemple de page de réservation Planélia : Orvanelle, prothésiste ongulaire fictive à Lyon"></div>
@@ -404,10 +415,9 @@ details[open] summary::after{background:var(--sauge);color:#fff}
     <div class="large offre">
       <div>
         <h2>Programme pionnières : places limitées</h2>
-        <p>Planélia est en test. Nous ouvrons un nombre limité de places à des pros qui l’utilisent gratuitement jusqu’au 31 mars 2027 et nous aident à l’améliorer avec leurs retours.</p>
+        <p>Planélia est en test. Nous ouvrons un nombre limité de places à des pros qui l’utilisent pendant le test et nous aident à l’améliorer avec leurs retours.</p>
         <ul>
           <li>Votre page montée pour vous, à votre image</li>
-          <li>Gratuit jusqu’au 31 mars 2027, puis 19&nbsp;€/mois sans engagement</li>
           <li>Vos retours orientent les prochaines fonctions</li>
         </ul>
         <p class="note">Places complètes&nbsp;? Écrivez-nous, on vous prévient. Une question avant de vous lancer ? Écrivez-nous sur <a href="https://www.instagram.com/planelia.fr/" rel="noopener">Instagram</a> ou à <a href="mailto:contact@planelia.fr">contact@planelia.fr</a>.</p>
@@ -415,8 +425,6 @@ details[open] summary::after{background:var(--sauge);color:#fff}
       <div class="tarif">
         <p class="gros" style="margin:0">0&nbsp;€ <small>jusqu’au 31 mars 2027</small></p>
         <ul>
-          <li>Puis 19&nbsp;€/mois, sans engagement</li>
-          <li>Aucune carte bancaire demandée</li>
           <li>Vous arrêtez quand vous voulez, en nous écrivant</li>
           <li>0 commission sur vos rendez-vous</li>
         </ul>
@@ -432,7 +440,7 @@ details[open] summary::after{background:var(--sauge);color:#fff}
       <h2>Questions fréquentes</h2>
       <details><summary>C’est quoi, Planélia&nbsp;?</summary><p>Une page de réservation à votre nom. Votre clientèle y choisit la prestation, le lieu et l’horaire, confirme par e-mail, et vous recevez chaque rendez-vous par e-mail. Planélia est actuellement en test.</p></details>
       <details><summary>C’est pour qui&nbsp;?</summary><p>Pour les pros des ongles et de l’esthétique à leur compte, qui reçoivent chez elles, se déplacent à domicile, ou les deux.</p></details>
-      <details><summary>Combien ça coûte&nbsp;?</summary><p>10 places, gratuit jusqu’au 31 mars 2027, puis 19&nbsp;€/mois sans engagement. Aucune carte bancaire demandée. Aucune commission sur vos rendez-vous.</p></details>
+      <details><summary>Combien ça coûte&nbsp;?</summary><p>Tout est dans le <a href="#tarif">tarif</a>, juste au-dessus. Aucune commission sur vos rendez-vous.</p></details>
       <details><summary>Y a-t-il un engagement&nbsp;?</summary><p>Non. Vous pouvez arrêter quand vous voulez en nous écrivant.</p></details>
       <details><summary>Et mes données, mon adresse&nbsp;?</summary><p>Si vous recevez chez vous, seul votre quartier est affiché : l’adresse exacte n’est donnée qu’une fois le rendez-vous confirmé. Les données sont sauvegardées chaque nuit, chiffrées, en Europe. Détails sur la page <a href="confidentialite.html">Confidentialité</a>.</p></details>
       <details><summary>Réserver, c’est compliqué pour mes clientes&nbsp;?</summary><p>Non. Elles réservent en quelques clics depuis leur téléphone ou leur ordinateur, sans compte ni mot de passe, et vous recevez les rendez-vous par e-mail et dans votre espace pro.</p></details>
@@ -455,9 +463,13 @@ details[open] summary::after{background:var(--sauge);color:#fff}
   <form novalidate>
     <h2 id="place-titre">Je veux une place</h2>
     <p class="chapo">Dites-nous l’essentiel, on monte votre page et on revient vers vous.</p>
-    <label>Votre prénom<input name="prenom" required maxlength="60" autocomplete="given-name"></label>
-    <label>E-mail ou téléphone<input name="contact" required maxlength="120" autocomplete="email" placeholder="Pour vous répondre"></label>
-    <label>Vos prestations et vos prix<textarea name="prestations" required maxlength="1500" rows="4" placeholder="Pose gel 45 €, remplissage 35 €…"></textarea></label>
+    <label>Votre prénom<input name="prenom" required maxlength="60" autocomplete="given-name" aria-describedby="aide-prenom"></label>
+    <span class="aide" id="aide-prenom"></span>
+    <label>E-mail ou téléphone<input name="contact" required maxlength="120" autocomplete="email" placeholder="Pour vous répondre" aria-describedby="aide-contact"
+      pattern="\s*([^@\s]+@[^@\s]+\.[^@\s]{2,}|(\+33|0)[\s.\-]*[1-9]([\s.\-]*\d{2}){4})\s*"></label>
+    <span class="aide" id="aide-contact"></span>
+    <label>Vos prestations et vos prix<textarea name="prestations" required maxlength="1500" rows="4" placeholder="Pose gel 45 €, remplissage 35 €…" aria-describedby="aide-prestations"></textarea></label>
+    <span class="aide" id="aide-prestations"></span>
     <label>Votre ville et vos secteurs <span>(facultatif)</span><input name="ville" maxlength="120" placeholder="Lyon 7e, et à domicile jusqu’à 15 km"></label>
     <label>Votre Instagram <span>(facultatif)</span><input name="instagram" maxlength="200" inputmode="url" placeholder="https://www.instagram.com/…"></label>
     <div class="piege" aria-hidden="true"><label>Site web<input name="site" tabindex="-1" autocomplete="off"></label></div>

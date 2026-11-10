@@ -10,6 +10,19 @@ const MESSAGES = {
   ip: 'Plusieurs demandes sont déjà parties d’ici. Réessayez dans une heure, ou écrivez à contact@planelia.fr.'
 };
 const AUTRE = 'L’envoi n’a pas marché. Écrivez-nous à contact@planelia.fr, on vous répond vite.';
+// Nos messages sous chaque champ, à la place des bulles du navigateur (form novalidate).
+const AIDES = {
+  prenom: {vide: 'Votre prénom, pour qu’on sache comment vous appeler 🙂'},
+  contact: {vide: 'Un e-mail ou un téléphone, pour vous répondre', format: 'Il manque un petit bout, on dirait. Par exemple : nina@gmail.com ou 06 12 34 56 78'},
+  prestations: {vide: 'Dites-nous quelques prestations et leurs prix'}
+};
+function verifie(champ) {
+  if (!champ.value.trim()) champ.value = '';   // des espaces seuls comptent comme vide
+  const ok = champ.checkValidity(), aide = AIDES[champ.name];
+  champ.setAttribute('aria-invalid', String(!ok));
+  document.getElementById('aide-' + champ.name).textContent = ok ? '' : champ.validity.valueMissing ? aide.vide : aide.format;
+  return ok;
+}
 
 // Turnstile (anti-robot invisible) chargé seulement au moment d'envoyer, comme sur rdv.planelia.fr (charger.js).
 let script;
@@ -37,9 +50,12 @@ addEventListener('DOMContentLoaded', () => {
   d.addEventListener('click', e => { if (e.target === d) fermer(); });   // clic sur le voile
   d.addEventListener('cancel', e => { e.preventDefault(); fermer(); });  // touche Échap : même sortie en douceur
 
+  form.addEventListener('input', e => { if (e.target.getAttribute('aria-invalid') === 'true') verifie(e.target); });   // le message part dès que c'est corrigé
   form.addEventListener('submit', async e => {
     e.preventDefault();
     etat.className = 'etat'; etat.textContent = '';
+    const fautes = Object.keys(AIDES).map(n => form[n]).filter(c => !verifie(c));
+    if (fautes.length) { fautes[0].focus(); return; }
     bouton.disabled = true; bouton.textContent = 'Envoi…';
     const v = n => form[n].value.trim();
     let code;
