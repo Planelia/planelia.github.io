@@ -28,7 +28,7 @@ const signaler = () => 'mailto:contact@planelia.fr?subject=' + encodeURIComponen
 // agenda : {jours, ouverture, fermeture, par_jour: {"6": {fermeture}}, pas, delai_min, pause} ; pas, délai et pause (15 min par défaut) : réglages de la pro
 const A = P.agenda || R.agenda, PAS = R.pas || A.pas || 30, DELAI = A.delai_min ?? 60, PAUSE = A.pause ?? 15;
 const heures = d => { const h = {...A, ...A.par_jour?.[d.getDay()]}; return [enMin(h.ouverture), enMin(h.fermeture)]; };
-const prenomPro = P.pro_prenom || P.nom.split(' ')[0];
+const prenomPro = P.pro_prenom || P.nom;   // nom entier : « Thalivéro Ongles » donnait « Chez Thalivéro » (parcours 19/10 ; ?creer ne demande pas de prénom)
 const studio = P.lieu.studio, domicile = P.lieu.domicile;
 const lieuxChoix = studio && domicile;
 // Secteurs (un jour par ligne dans le contenu) regroupés par nom : {nom, frais, trajet, jours:[…]}
