@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://cloudflareinsights.com https://crwlkyzqgnxmjxgacvze.supabase.co; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Planélia — réservation en ligne pour pros de la beauté à leur compte</title>
 <meta name="description" content="Planélia, la page de réservation à votre nom pour les pros des ongles et de l’esthétique à leur compte, chez vous ou à domicile. En test : gratuit jusqu’au 31 mars 2027, places limitées.">
@@ -271,20 +271,56 @@ details p{padding-right:44px}
 @media (min-width:861px){.js .point.apparait.vu:not(.actif){opacity:.38}.js .point.apparait.vu.actif{transform:translateX(6px)}}
 @media (max-width:860px){.js .point.apparait.vu:not(.actif){opacity:.55}}
 /* ===== v4 « nuage » (09/11 soir) : tout glisse en douceur ===== */
-:root{--doux:cubic-bezier(.22,1,.36,1)}
+:root{--glisse:cubic-bezier(.22,1,.36,1)}
 @media (prefers-reduced-motion:no-preference){
-  .js .apparait{filter:blur(6px);transition:opacity 1.1s var(--doux),transform 1.1s var(--doux),filter 1.1s var(--doux)}
+  .js .apparait{filter:blur(6px);transition:opacity 1.1s var(--glisse),transform 1.1s var(--glisse),filter 1.1s var(--glisse)}
   .js .apparait.vu{filter:none}
-  .btn{transition:transform .6s var(--doux),box-shadow .6s var(--doux),background .4s}
+  .btn{transition:transform .6s var(--glisse),box-shadow .6s var(--glisse),background .4s}
   .btn:hover{transform:translateY(-3px);box-shadow:0 18px 34px -14px rgba(166,95,63,.55)}
-  .carte-demo{transition:transform .7s var(--doux),box-shadow .7s var(--doux)}
-  .menu nav a::after{transition:transform .5s var(--doux)}
+  .carte-demo{transition:transform .7s var(--glisse),box-shadow .7s var(--glisse)}
+  .menu nav a::after{transition:transform .5s var(--glisse)}
 }
 .faq .corps{overflow:hidden}
-summary{border-radius:12px;transition:color .4s var(--doux),padding .5s var(--doux)}
+summary{border-radius:12px;transition:color .4s var(--glisse),padding .5s var(--glisse)}
 @media (hover:hover){summary:hover{color:var(--sauge-fonce);padding-left:6px}}
-summary::after{transition:transform .6s var(--doux),background .4s}
+summary::after{transition:transform .6s var(--glisse),background .4s}
 details[open] summary::after{background:var(--sauge);color:#fff}
+/* ===== Formulaire « Je veux une place » (09/11) : feuille qui glisse ===== */
+#place{border:0;padding:34px 30px 26px;width:min(520px,calc(100% - 24px));max-height:calc(100dvh - 40px);overflow:auto;border-radius:28px;
+  background:rgba(251,246,238,.97);color:var(--texte);box-shadow:0 30px 80px -20px rgba(47,58,51,.45)}
+#place::backdrop{background:rgba(47,58,51,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#place[open]{animation:place-entre .6s var(--glisse)}
+#place[open]::backdrop{animation:place-voile .5s ease}
+#place.ferme{animation:place-sort .38s ease forwards}
+#place.ferme::backdrop{animation:place-voile .38s ease reverse forwards}
+@keyframes place-entre{from{opacity:0;transform:translateY(40px) scale(.98);filter:blur(4px)}}
+@keyframes place-sort{to{opacity:0;transform:translateY(30px);filter:blur(4px)}}
+@keyframes place-voile{from{opacity:0}}
+#place h2{margin:0 0 6px}
+#place .chapo{margin:0 0 18px;color:var(--doux)}
+#place label{display:block;font-weight:600;font-size:.95rem;margin:0 0 14px}
+#place label span{font-weight:400;color:var(--doux)}
+#place input,#place textarea{display:block;width:100%;box-sizing:border-box;margin-top:6px;padding:13px 16px;font:inherit;font-weight:400;color:var(--texte);
+  background:#fff;border:1px solid rgba(77,107,87,.22);border-radius:14px;transition:border-color .4s var(--glisse),box-shadow .4s var(--glisse)}
+#place textarea{resize:vertical;min-height:96px}
+#place input:focus,#place textarea:focus{outline:0;border-color:var(--sauge);box-shadow:0 0 0 4px rgba(77,107,87,.14)}
+#place .piege{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+#place .btn{width:100%;border:0;cursor:pointer;font:inherit;font-weight:600;margin-top:4px}
+#place .btn:disabled{opacity:.6;cursor:wait}
+#place .etat:empty{display:none}
+#place .etat{margin:0 0 12px;padding:12px 14px;border-radius:12px;background:#fbe9e3;color:#7a3b25;font-size:.95rem}
+#place .petit{margin:14px 0 0;font-size:.82rem;color:var(--doux)}
+#place .fermer{position:absolute;top:14px;right:14px;width:38px;height:38px;border:0;border-radius:50%;background:var(--sauge-clair);color:var(--sauge-fonce);
+  font-size:1.5rem;line-height:1;cursor:pointer;transition:transform .5s var(--glisse)}
+#place .fermer:hover{transform:rotate(90deg)}
+#place .merci{display:none;text-align:center;padding:30px 6px 16px}
+#place.envoye form{display:none}
+#place.envoye .merci{display:block;animation:place-entre .7s var(--glisse)}
+#place .ok{width:64px;height:64px;margin:0 auto 14px;display:grid;place-items:center;border-radius:50%;background:var(--sauge);color:#fff;font-size:1.8rem}
+@media (max-width:540px){#place{margin:auto auto 0;width:100%;max-width:100%;border-radius:28px 28px 0 0;padding:30px 20px 24px;max-height:92dvh}
+  @keyframes place-entre{from{transform:translateY(100%)}}
+  @keyframes place-sort{to{transform:translateY(100%)}}}
+@media (prefers-reduced-motion:reduce){#place[open],#place.ferme,#place[open]::backdrop,#place.envoye .merci{animation:none}}
 </style>
 </head>
 <body>
@@ -414,6 +450,25 @@ details[open] summary::after{background:var(--sauge);color:#fff}
 </footer>
 <script defer src="assets/nelia-dessins.js"></script><script defer src="assets/nelia.js"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "97c04b8fa79a458eb1ad6857334ec16c"}'></script>
+<dialog id="place" aria-labelledby="place-titre">
+  <button class="fermer" type="button" aria-label="Fermer">×</button>
+  <form novalidate>
+    <h2 id="place-titre">Je veux une place</h2>
+    <p class="chapo">Dites-nous l’essentiel, on monte votre page et on revient vers vous.</p>
+    <label>Votre prénom<input name="prenom" required maxlength="60" autocomplete="given-name"></label>
+    <label>E-mail ou téléphone<input name="contact" required maxlength="120" autocomplete="email" placeholder="Pour vous répondre"></label>
+    <label>Vos prestations et vos prix<textarea name="prestations" required maxlength="1500" rows="4" placeholder="Pose gel 45 €, remplissage 35 €…"></textarea></label>
+    <label>Votre ville et vos secteurs <span>(facultatif)</span><input name="ville" maxlength="120" placeholder="Lyon 7e, et à domicile jusqu’à 15 km"></label>
+    <label>Votre Instagram <span>(facultatif)</span><input name="instagram" maxlength="200" inputmode="url" placeholder="https://www.instagram.com/…"></label>
+    <div class="piege" aria-hidden="true"><label>Site web<input name="site" tabindex="-1" autocomplete="off"></label></div>
+    <div class="robot"></div>
+    <p class="etat" role="status"></p>
+    <button class="btn vert" type="submit">Envoyer ma demande</button>
+    <p class="petit">Vos réponses servent seulement à vous recontacter pour votre place. Rien n’est publié. <a href="confidentialite.html#messages">Confidentialité</a></p>
+  </form>
+  <div class="merci" role="status"><p class="ok">✓</p><h2>C’est bien reçu&nbsp;!</h2><p>Merci. On regarde votre demande et on revient vers vous très vite.</p></div>
+</dialog>
 <script src="assets/design.js"></script>
+<script src="assets/place.js"></script>
 </body>
 </html>
