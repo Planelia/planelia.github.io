@@ -159,6 +159,10 @@ function creneauxLibres(jour, dureeTot, trajet) {
   }
   return libres;
 }
+// Jour coché d'office : le premier où il reste un créneau (pas « aujourd'hui » quand la journée est déjà passée).
+function premierJourLibre(jours, dureeTot, trajet) {
+  return Math.max(0, jours.findIndex(j => creneauxLibres(j, dureeTot, trajet).length));
+}
 // « Plus que N places » : RDV d'1 h 30 qu'on peut encore caser d'ici FIN_PLACES.
 function placesSemaine() {
   let n = 0;
@@ -406,7 +410,8 @@ function maj() {
   const cle = String(s.zone?.jours);
   if (cle !== cleJours) {          // les jours proposés dépendent du secteur
     cleJours = cle; jours = joursOuverts(s.zone?.jours);
-    $('jours').innerHTML = jours.map((j, i) => `<label><input type="radio" name="jour" value="${i}"${i ? '' : ' checked'}>
+    const premier = premierJourLibre(jours, s.dureeTot, s.zone ? s.zone.trajet : 0);
+    $('jours').innerHTML = jours.map((j, i) => `<label><input type="radio" name="jour" value="${i}"${i === premier ? ' checked' : ''}>
       <small>${j.date.toLocaleDateString('fr-FR', {weekday: 'short'})}</small><b>${j.date.getDate()}</b>
       <small>${j.date.toLocaleDateString('fr-FR', {month: 'short'})}</small></label>`).join('');
   }
