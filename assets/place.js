@@ -31,8 +31,7 @@ addEventListener('DOMContentLoaded', () => {
   if (!d || typeof d.showModal !== 'function') return;   // vieux navigateur : le lien mailto fait le travail
   const form = d.querySelector('form'), etat = d.querySelector('.etat'), bouton = form.querySelector('button[type=submit]');
   const ouvrir = e => { e.preventDefault(); d.classList.remove('ferme'); d.showModal(); form.prenom.focus({preventScroll: true}); };
-  // En pause (10/11) : Turnstile refuse planelia.fr (erreur 110200), le lien e-mail reprend la main en attendant.
-  if (false) document.querySelectorAll('a[href^="mailto:contact@planelia.fr?subject=Je"]').forEach(a => a.addEventListener('click', ouvrir));
+  document.querySelectorAll('a[href^="mailto:contact@planelia.fr?subject=Je"]').forEach(a => a.addEventListener('click', ouvrir));
   const fermer = () => { d.classList.add('ferme'); setTimeout(() => { d.close(); d.classList.remove('ferme'); }, 380); };
   d.querySelector('.fermer').addEventListener('click', fermer);
   d.addEventListener('click', e => { if (e.target === d) fermer(); });   // clic sur le voile
