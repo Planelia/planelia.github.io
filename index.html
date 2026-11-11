@@ -168,6 +168,9 @@ h2{font-size:clamp(1.9rem,3.6vw,2.7rem);letter-spacing:-.015em}
 .rassure{display:flex;flex-wrap:wrap;gap:8px}
 .rassure span{padding:6px 12px;border-radius:999px;background:rgba(223,232,220,.7);font-size:.85rem}
 .rassure span+span::before{content:none}
+.btn.discret{padding:11px 22px;font-size:.95rem;font-weight:500}
+.lien-demo{flex:1 1 100%;text-align:center;padding:10px;min-height:44px;color:var(--sauge-fonce);font-weight:600;text-decoration:underline}
+.apres{margin:12px 0 0;font-size:.9rem;color:var(--texte)}
 .telephone{width:290px;border:9px solid #253029;border-radius:44px;box-shadow:var(--ombre-forte),0 40px 80px -30px rgba(77,107,87,.45);transform:rotate(2deg)}
 @media (prefers-reduced-motion:no-preference){.telephone{animation:flotte 7s ease-in-out infinite}}
 @keyframes flotte{50%{transform:rotate(2deg) translateY(-10px)}}
@@ -347,15 +350,16 @@ details[open] summary::after{background:var(--sauge);color:#fff}
 <div class="haut">
   <div class="large">
     <div>
-      <p class="badge"><span class="pastille" aria-hidden="true"></span>Programme pionnières · 10 places · Votre page montée pour vous</p>
+      <p class="badge"><span class="pastille" aria-hidden="true"></span>Pour prothésistes ongulaires et esthéticiennes à leur compte · 10 places</p>
       <h1>Votre clientèle réserve en ligne, <span class="accent">chez vous ou à domicile</span></h1>
       <p class="sous">Prestation, lieu, horaire : elle choisit.<br>Le rendez-vous arrive par e‑mail.</p>
       <p class="petit"><strong>10 places, gratuit jusqu’au 31 mars 2027, puis 19&nbsp;€/mois sans engagement. Aucune carte bancaire demandée.</strong></p>
       <div class="actions">
         <a class="btn vert respire" href="mailto:contact@planelia.fr?subject=Je%20veux%20une%20place%20sur%20Plan%C3%A9lia&amp;body=Bonjour%20Renzo%2C%0A%0AMes%20prestations%20et%20mes%20prix%20%3A%0A%0AMa%20ville%20et%20mes%20secteurs%20%3A%0A%0AMon%20Instagram%20(lien)%20%3A%0A%0AMerci%20!">Je veux une place</a>
-        <a class="btn second" href="https://rdv.planelia.fr/pro/?creer" rel="noopener">Créer ma page moi-même</a>
-        <a class="btn second" href="demo/index.html">Voir une démo</a>
+        <a class="btn second discret" href="https://rdv.planelia.fr/pro/?creer" rel="noopener">Créer ma page moi-même</a>
+        <a class="lien-demo" href="demo/index.html">Voir une démo</a>
       </div>
+      <p class="apres">On monte votre page avec vous. Rien n’est publié sans votre accord.</p>
       <p class="rassure"><span>0 commission</span><span>données sauvegardées en Europe</span></p>
     </div>
     <div>
