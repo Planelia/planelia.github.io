@@ -365,6 +365,21 @@ if ($('mentions')) {
   $('lienMentions').onclick = e => { e.preventDefault(); $('mentions').showModal(); };
   $('mentions').querySelector('button').onclick = () => $('mentions').close();
 }
+// « Voir le détail » s'ouvre et se ferme en douceur (hauteur + opacité, 250 ms), sauf si l'appareil demande moins de mouvement
+document.addEventListener('click', e => {
+  const s = e.target.closest('details.detail > summary'), d = s?.parentElement;
+  if (!d || !d.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  e.preventDefault();
+  if (d.dataset.anim) return;
+  const avant = d.offsetHeight; d.open = !d.open;
+  const apres = d.offsetHeight, ouvrir = d.open, o = {duration: 250, easing: 'ease', fill: 'forwards'};
+  d.open = true; d.dataset.anim = 1; d.style.overflow = 'hidden';
+  const fondus = [...d.children].filter(x => x !== s).map(x => x.animate({opacity: ouvrir ? [0, 1] : [1, 0]}, o));
+  d.animate({height: [avant + 'px', apres + 'px']}, o).onfinish = a => {
+    d.open = ouvrir; d.style.overflow = ''; delete d.dataset.anim;
+    a.target.cancel(); fondus.forEach(f => f.cancel());
+  };
+});
 const zoom = $('zoom');
 const grille = document.querySelector('.galerie');
 if (grille) grille.onclick = e => {
