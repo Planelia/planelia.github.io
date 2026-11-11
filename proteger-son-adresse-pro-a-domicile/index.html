@@ -43,6 +43,10 @@ section{padding:28px 0 0}
 .prix{font-size:.95rem;color:var(--doux)}
 footer{text-align:center;color:var(--doux);font-size:.85rem;padding:28px 20px 36px;border-top:1px solid var(--ligne)}
 footer a{color:var(--sauge)}
+/* Reflet sur « Je veux une place » (Renzo 11/11) : CSS seul, rien si mouvement réduit, aucun décalage (transform sur un calque sous le texte) */
+.brille{position:relative;overflow:hidden;isolation:isolate}
+@media (prefers-reduced-motion:no-preference){.brille::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.38) 50%,transparent 70%);transform:translateX(-130%);animation:brille 3.6s ease-in-out 1s infinite}}
+@keyframes brille{0%{transform:translateX(-130%)}30%,100%{transform:translateX(130%)}}
 </style>
 </head>
 <body>
@@ -106,7 +110,7 @@ footer a{color:var(--sauge)}
     <h2>Essayez-le pendant la phase de test</h2>
     <p>Planélia propose 10 places gratuites pour l'essayer.</p>
     <p class="prix">10 places, gratuit jusqu’au 31 mars 2027, puis 19&nbsp;€/mois sans engagement. Zéro commission sur vos prestations. Aucune carte bancaire demandée.</p>
-    <a class="btn terra" href="https://rdv.planelia.fr/pro/?creer" rel="noopener">Je veux une place</a>
+    <a class="btn terra brille" href="https://rdv.planelia.fr/pro/?creer" rel="noopener">Je veux une place</a>
   </div>
 </main>
 
