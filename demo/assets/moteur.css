@@ -45,11 +45,11 @@ header .bio{margin:10px auto 0;max-width:30em;white-space:pre-line}
 .vignette{aspect-ratio:1;border:0;padding:0;border-radius:calc(var(--rayon) / 2);overflow:hidden;background:var(--accent-fond);cursor:zoom-in}
 .vignette img{width:100%;height:100%;object-fit:cover;display:block}
 .vignette.vide{display:grid;place-items:center;color:var(--doux);font-size:.75rem;cursor:default;border:1px dashed var(--bord)}
-dialog{border:0;padding:0;background:transparent;max-width:min(94vw,560px)}
-dialog::backdrop{background:rgba(0,0,0,.8)}
-dialog img{width:100%;border-radius:var(--rayon);display:block}
-dialog p{color:#fff;text-align:center;margin:8px 0}
-dialog button{display:block;margin:0 auto;font:600 1rem var(--police-texte);background:#fff;color:#222;border:0;border-radius:99px;padding:8px 20px}
+dialog:not(#fenResa){border:0;padding:0;background:transparent;max-width:min(94vw,560px)}
+dialog:not(#fenResa)::backdrop{background:rgba(0,0,0,.8)}
+dialog:not(#fenResa) img{width:100%;border-radius:var(--rayon);display:block}
+dialog:not(#fenResa) p{color:#fff;text-align:center;margin:8px 0}
+dialog:not(#fenResa) button{display:block;margin:0 auto;font:600 1rem var(--police-texte);background:#fff;color:#222;border:0;border-radius:99px;padding:8px 20px}
 
 /* Cartes à choisir */
 .choix{display:grid;gap:10px}
