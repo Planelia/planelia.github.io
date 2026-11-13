@@ -15,6 +15,7 @@ window.PRO.reglages = {
     },
     css: `
       h1{background:linear-gradient(100deg,#fff 0,#b9bccb 30%,#fff 50%,#8f95ad 70%,#fff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:1.9rem}
+      :is(header h1,.metier,.accroche,header .bio,main h2,h3.cat,label.champ,.muted,.signature){background-color:transparent!important;box-shadow:none!important}
       h2{font-size:1.05rem}
       .accroche{font-size:.95rem;color:#ff3ea5;text-transform:uppercase;letter-spacing:.04em}
       .btn{text-transform:uppercase;letter-spacing:.08em;box-shadow:0 0 22px #ff3ea555}
