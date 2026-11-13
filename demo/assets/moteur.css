@@ -153,7 +153,3 @@ label.champ{display:block;font-weight:500;margin:12px 0 6px}
 .styles button[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .styles button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 #mentions{background:var(--carte);color:var(--texte);padding:20px;border-radius:var(--rayon);text-align:left}#mentions h2{margin-top:0}#mentions p{color:var(--texte);text-align:left}#mentions dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0 0 12px}#mentions dt{color:var(--doux)}#mentions dd{margin:0;overflow-wrap:anywhere}#mentions a{color:var(--accent)}#mentions button{background:var(--carte);color:var(--texte);border:var(--bord-ep) solid var(--bord)}
-/* Zone de réserve (Joël 13/11) : sur un fond à motif, aucun trait ne passe sous un texte posé sur la page (fond uni + halo doux).
-   Sans --fond-uni (thème sans motif) : transparent, rien ne change. Contrôle : maquette.mjs refuse tout texte resté sur le motif. */
-:is(header h1,.metier,.accroche,header .bio,main h2,h3.cat,label.champ,.muted,.signature){background:var(--fond-uni,transparent);box-shadow:0 0 12px 10px var(--fond-uni,transparent);border-radius:12px}
-/* Pas de width:fit-content (13/11) : il rétrécissait les blocs et faisait ressortir le motif autour sur les aperçus déjà en ligne. */
