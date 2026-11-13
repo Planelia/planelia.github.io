@@ -45,6 +45,7 @@ addEventListener('DOMContentLoaded', () => {
   const form = d.querySelector('form'), etat = d.querySelector('.etat'), bouton = form.querySelector('button[type=submit]');
   const ouvrir = e => { e.preventDefault(); d.classList.remove('ferme'); d.showModal(); form.prenom.focus({preventScroll: true}); };
   document.querySelectorAll('a[href^="mailto:contact@planelia.fr?subject=Je"]').forEach(a => a.addEventListener('click', ouvrir));
+  if (location.hash === '#place') ouvrir(new Event('ouvrir'));   // lien « Débloquer ma page » d'un aperçu flouté (Joël 13/11)
   const fermer = () => { d.classList.add('ferme'); setTimeout(() => { d.close(); d.classList.remove('ferme'); }, 380); };
   d.querySelector('.fermer').addEventListener('click', fermer);
   d.addEventListener('click', e => { if (e.target === d) fermer(); });   // clic sur le voile
@@ -61,7 +62,7 @@ addEventListener('DOMContentLoaded', () => {
     let code;
     try {
       const corps = {prenom: v('prenom'), contact: v('contact'), prestations: form.prestations.value, ville: v('ville'), instagram: v('instagram'),
-        piege: form.site.value, turnstile: await jetonAntiRobot(d.querySelector('.robot'))};
+        piege: form.site.value, source: new URLSearchParams(location.search).get('source') || undefined, turnstile: await jetonAntiRobot(d.querySelector('.robot'))};
       const r = await fetch(FN, {method: 'POST', headers: {apikey: CLE, 'Content-Type': 'application/json'}, body: JSON.stringify(corps)});
       code = (await r.json()).code;
     } catch { code = 'reseau'; }
