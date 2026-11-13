@@ -118,6 +118,28 @@ const theme = st => {
 document.head.insertAdjacentHTML('beforeend', '<style id="cssPro"></style>');
 theme();
 document.title = `${P.nom} — Réserver`;
+// SEO local (veille Hugo n° 3, GO Renzo via Joël 13/11) : title + meta description « métier à ville » et JSON-LD BeautySalon.
+// JAMAIS d'adresse, de rue, de code postal, de geo ni de téléphone (adresse protégée) : zone = ville + secteurs de déplacement.
+// sameAs : seulement un lien instagram.com / tiktok.com déjà dans P.contact. Garde-fou : maquette.mjs refuse sinon.
+// Vraie page : seulement si la pro a coché « Être visible sur Google » (R.google, charger.js) ; démos et maquettes : toujours.
+if (!REEL || R.google) {
+  const zone = [...new Set([P.ville, ...(P.secteurs || []).map(s => s.secteur)].filter(Boolean))];
+  const url = location.origin + location.pathname, prestas = (P.prestations || []).slice(0, 30);
+  document.title = `${P.nom} · ${P.metier} à ${P.ville} · Réserver`;
+  const desc = `${P.metier} à ${P.ville}${zone.length > 1 ? ', se déplace à ' + zone.slice(1, 4).join(', ') : ''}. ${prestas.slice(0, 3).map(p => p.nom).join(', ')}. Réservez en ligne.`;
+  const meta = document.querySelector('meta[name=description]') || document.head.appendChild(Object.assign(document.createElement('meta'), {name: 'description'}));
+  meta.content = desc.length > 158 ? desc.slice(0, desc.lastIndexOf(' ', 155)) + '.' : desc;
+  const reseaux = Object.values(P.contact || {}).filter(v => typeof v === 'string' && /^https:\/\/(www\.)?(instagram\.com|tiktok\.com)\/[^\s"<>]+$/.test(v));
+  const ld = {'@context': 'https://schema.org', '@type': 'BeautySalon', name: P.nom, description: `${P.metier} à ${P.ville}`, url,
+    areaServed: zone.map((name, i) => ({'@type': i ? 'Place' : 'City', name})),   // secteurs : « Grenoble centre », « Meylan, Seyssinet »… pas toujours une commune
+    ...(reseaux.length ? {sameAs: reseaux} : {}),
+    potentialAction: {'@type': 'ReserveAction', target: url + '#resa'},
+    hasOfferCatalog: {'@type': 'OfferCatalog', name: 'Prestations', itemListElement: prestas.map(p => ({'@type': 'Offer',
+      itemOffered: {'@type': 'Service', name: p.nom}, ...(p.prix > 0 ? {price: p.prix, priceCurrency: 'EUR'} : {})}))}};
+  const s = Object.assign(document.createElement('script'), {type: 'application/ld+json', id: 'seoLocal'});
+  s.textContent = JSON.stringify(ld).replace(/</g, '\\u003c');
+  document.head.append(s);
+}
 
 // ---------- Agenda fictif : quelques RDV déjà pris, différents chaque jour ----------
 const dimanche = new Date(); dimanche.setDate(dimanche.getDate() + (7 - dimanche.getDay()) % 7); dimanche.setHours(23, 59);
